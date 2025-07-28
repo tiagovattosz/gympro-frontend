@@ -1,13 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
+import AppLayout from "../layout/AppLayout";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  component: RouteComponent,
 });
 
-function Index() {
+function RouteComponent() {
   return (
-    <div className="p-2">
-      <h3>Welcome Home!</h3>
-    </div>
+    <AppLayout>
+      <h2>teste</h2>
+    </AppLayout>
   );
 }

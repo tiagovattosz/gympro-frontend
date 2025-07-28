@@ -13,4 +13,14 @@ export default defineConfig({
     }),
     react(),
   ],
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+        secure: false, // Se estiver usando HTTPS, pode ser necessário ajustar isso
+        rewrite: (path) => path.replace(/^\/api/, ""), // Remove "/api" do caminho
+      },
+    },
+  },
 });
