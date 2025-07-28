@@ -10,17 +10,21 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PlanosIndexRouteImport } from './routes/planos/index'
+import { Route as MovimentosIndexRouteImport } from './routes/movimentos/index'
+import { Route as ModalidadesIndexRouteImport } from './routes/modalidades/index'
+import { Route as ManutencoesIndexRouteImport } from './routes/manutencoes/index'
+import { Route as InscricoesIndexRouteImport } from './routes/inscricoes/index'
+import { Route as FuncionariosIndexRouteImport } from './routes/funcionarios/index'
+import { Route as EquipamentosIndexRouteImport } from './routes/equipamentos/index'
+import { Route as ClientesIndexRouteImport } from './routes/clientes/index'
+import { Route as CargosIndexRouteImport } from './routes/cargos/index'
+import { Route as AulasIndexRouteImport } from './routes/aulas/index'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -28,35 +32,158 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlanosIndexRoute = PlanosIndexRouteImport.update({
+  id: '/planos/',
+  path: '/planos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MovimentosIndexRoute = MovimentosIndexRouteImport.update({
+  id: '/movimentos/',
+  path: '/movimentos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModalidadesIndexRoute = ModalidadesIndexRouteImport.update({
+  id: '/modalidades/',
+  path: '/modalidades/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManutencoesIndexRoute = ManutencoesIndexRouteImport.update({
+  id: '/manutencoes/',
+  path: '/manutencoes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InscricoesIndexRoute = InscricoesIndexRouteImport.update({
+  id: '/inscricoes/',
+  path: '/inscricoes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FuncionariosIndexRoute = FuncionariosIndexRouteImport.update({
+  id: '/funcionarios/',
+  path: '/funcionarios/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EquipamentosIndexRoute = EquipamentosIndexRouteImport.update({
+  id: '/equipamentos/',
+  path: '/equipamentos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientesIndexRoute = ClientesIndexRouteImport.update({
+  id: '/clientes/',
+  path: '/clientes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CargosIndexRoute = CargosIndexRouteImport.update({
+  id: '/cargos/',
+  path: '/cargos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AulasIndexRoute = AulasIndexRouteImport.update({
+  id: '/aulas/',
+  path: '/aulas/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/aulas': typeof AulasIndexRoute
+  '/cargos': typeof CargosIndexRoute
+  '/clientes': typeof ClientesIndexRoute
+  '/equipamentos': typeof EquipamentosIndexRoute
+  '/funcionarios': typeof FuncionariosIndexRoute
+  '/inscricoes': typeof InscricoesIndexRoute
+  '/manutencoes': typeof ManutencoesIndexRoute
+  '/modalidades': typeof ModalidadesIndexRoute
+  '/movimentos': typeof MovimentosIndexRoute
+  '/planos': typeof PlanosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/aulas': typeof AulasIndexRoute
+  '/cargos': typeof CargosIndexRoute
+  '/clientes': typeof ClientesIndexRoute
+  '/equipamentos': typeof EquipamentosIndexRoute
+  '/funcionarios': typeof FuncionariosIndexRoute
+  '/inscricoes': typeof InscricoesIndexRoute
+  '/manutencoes': typeof ManutencoesIndexRoute
+  '/modalidades': typeof ModalidadesIndexRoute
+  '/movimentos': typeof MovimentosIndexRoute
+  '/planos': typeof PlanosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/aulas/': typeof AulasIndexRoute
+  '/cargos/': typeof CargosIndexRoute
+  '/clientes/': typeof ClientesIndexRoute
+  '/equipamentos/': typeof EquipamentosIndexRoute
+  '/funcionarios/': typeof FuncionariosIndexRoute
+  '/inscricoes/': typeof InscricoesIndexRoute
+  '/manutencoes/': typeof ManutencoesIndexRoute
+  '/modalidades/': typeof ModalidadesIndexRoute
+  '/movimentos/': typeof MovimentosIndexRoute
+  '/planos/': typeof PlanosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/login'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/aulas'
+    | '/cargos'
+    | '/clientes'
+    | '/equipamentos'
+    | '/funcionarios'
+    | '/inscricoes'
+    | '/manutencoes'
+    | '/modalidades'
+    | '/movimentos'
+    | '/planos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/login'
-  id: '__root__' | '/' | '/about' | '/login'
+  to:
+    | '/'
+    | '/login'
+    | '/aulas'
+    | '/cargos'
+    | '/clientes'
+    | '/equipamentos'
+    | '/funcionarios'
+    | '/inscricoes'
+    | '/manutencoes'
+    | '/modalidades'
+    | '/movimentos'
+    | '/planos'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/aulas/'
+    | '/cargos/'
+    | '/clientes/'
+    | '/equipamentos/'
+    | '/funcionarios/'
+    | '/inscricoes/'
+    | '/manutencoes/'
+    | '/modalidades/'
+    | '/movimentos/'
+    | '/planos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
   LoginRoute: typeof LoginRoute
+  AulasIndexRoute: typeof AulasIndexRoute
+  CargosIndexRoute: typeof CargosIndexRoute
+  ClientesIndexRoute: typeof ClientesIndexRoute
+  EquipamentosIndexRoute: typeof EquipamentosIndexRoute
+  FuncionariosIndexRoute: typeof FuncionariosIndexRoute
+  InscricoesIndexRoute: typeof InscricoesIndexRoute
+  ManutencoesIndexRoute: typeof ManutencoesIndexRoute
+  ModalidadesIndexRoute: typeof ModalidadesIndexRoute
+  MovimentosIndexRoute: typeof MovimentosIndexRoute
+  PlanosIndexRoute: typeof PlanosIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -68,13 +195,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -82,13 +202,92 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/planos/': {
+      id: '/planos/'
+      path: '/planos'
+      fullPath: '/planos'
+      preLoaderRoute: typeof PlanosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/movimentos/': {
+      id: '/movimentos/'
+      path: '/movimentos'
+      fullPath: '/movimentos'
+      preLoaderRoute: typeof MovimentosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modalidades/': {
+      id: '/modalidades/'
+      path: '/modalidades'
+      fullPath: '/modalidades'
+      preLoaderRoute: typeof ModalidadesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manutencoes/': {
+      id: '/manutencoes/'
+      path: '/manutencoes'
+      fullPath: '/manutencoes'
+      preLoaderRoute: typeof ManutencoesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inscricoes/': {
+      id: '/inscricoes/'
+      path: '/inscricoes'
+      fullPath: '/inscricoes'
+      preLoaderRoute: typeof InscricoesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/funcionarios/': {
+      id: '/funcionarios/'
+      path: '/funcionarios'
+      fullPath: '/funcionarios'
+      preLoaderRoute: typeof FuncionariosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/equipamentos/': {
+      id: '/equipamentos/'
+      path: '/equipamentos'
+      fullPath: '/equipamentos'
+      preLoaderRoute: typeof EquipamentosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clientes/': {
+      id: '/clientes/'
+      path: '/clientes'
+      fullPath: '/clientes'
+      preLoaderRoute: typeof ClientesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cargos/': {
+      id: '/cargos/'
+      path: '/cargos'
+      fullPath: '/cargos'
+      preLoaderRoute: typeof CargosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aulas/': {
+      id: '/aulas/'
+      path: '/aulas'
+      fullPath: '/aulas'
+      preLoaderRoute: typeof AulasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
   LoginRoute: LoginRoute,
+  AulasIndexRoute: AulasIndexRoute,
+  CargosIndexRoute: CargosIndexRoute,
+  ClientesIndexRoute: ClientesIndexRoute,
+  EquipamentosIndexRoute: EquipamentosIndexRoute,
+  FuncionariosIndexRoute: FuncionariosIndexRoute,
+  InscricoesIndexRoute: InscricoesIndexRoute,
+  ManutencoesIndexRoute: ManutencoesIndexRoute,
+  ModalidadesIndexRoute: ModalidadesIndexRoute,
+  MovimentosIndexRoute: MovimentosIndexRoute,
+  PlanosIndexRoute: PlanosIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

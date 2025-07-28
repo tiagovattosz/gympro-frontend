@@ -5,10 +5,10 @@ import { login } from "../auth/auth";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 
 export const Route = createFileRoute("/login")({
-  component: LoginPage,
+  component: Login,
 });
 
-function LoginPage() {
+function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
