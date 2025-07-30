@@ -57,6 +57,10 @@ function MovimentosPage() {
     return horaCompleta.substring(0, 8); // "HH:mm:ss"
   }
 
+  function formatarCPF(cpf) {
+    return cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
+  }
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" mt={4}>
@@ -74,6 +78,7 @@ function MovimentosPage() {
         <TableHead>
           <TableRow>
             <TableCell>Nome</TableCell>
+            <TableCell>CPF</TableCell>
             <TableCell>Matrícula</TableCell>
             <TableCell>Data</TableCell>
             <TableCell>Hora</TableCell>
@@ -89,6 +94,7 @@ function MovimentosPage() {
                   {mov.nome}
                 </Box>
               </TableCell>
+              <TableCell>{formatarCPF(mov.cpf)}</TableCell>
               <TableCell>{mov.matricula}</TableCell>
               <TableCell>{formatarData(mov.data)}</TableCell>
               <TableCell>{formatHora(mov.hora)}</TableCell>

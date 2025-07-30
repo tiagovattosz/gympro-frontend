@@ -8,9 +8,10 @@ import {
   Typography,
   Box,
   CircularProgress,
+  Button,
 } from "@mui/material";
 import { CheckCircle, Cancel } from "@mui/icons-material";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/aulas/")({
   component: AulasPage,
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/aulas/")({
 function AulasPage() {
   const [aulas, setAulas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchAulas() {
@@ -82,9 +84,21 @@ function AulasPage() {
 
   return (
     <Box p={2}>
-      <Typography variant="h5" gutterBottom>
-        Lista de Aulas
-      </Typography>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
+        <Typography variant="h5">Lista de Aulas</Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate({ to: "/aulas/novo" })}
+        >
+          Nova Aula
+        </Button>
+      </Box>
       <Table>
         <TableHead>
           <TableRow>

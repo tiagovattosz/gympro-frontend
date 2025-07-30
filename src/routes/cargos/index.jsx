@@ -8,8 +8,9 @@ import {
   Typography,
   Box,
   CircularProgress,
+  Button,
 } from "@mui/material";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/cargos/")({
   component: CargosPage,
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/cargos/")({
 function CargosPage() {
   const [cargos, setCargos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchCargos() {
@@ -62,9 +64,21 @@ function CargosPage() {
 
   return (
     <Box p={2}>
-      <Typography variant="h5" gutterBottom>
-        Lista de Cargos
-      </Typography>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
+        <Typography variant="h5">Lista de Cargos</Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate({ to: "/cargos/novo" })}
+        >
+          Novo Cargo
+        </Button>
+      </Box>
       <Table>
         <TableHead>
           <TableRow>

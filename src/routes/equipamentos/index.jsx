@@ -8,9 +8,10 @@ import {
   Typography,
   Box,
   CircularProgress,
+  Button,
 } from "@mui/material";
 import { CheckCircle, Cancel } from "@mui/icons-material";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/equipamentos/")({
   component: EquipamentosPage,
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/equipamentos/")({
 function EquipamentosPage() {
   const [equipamentos, setEquipamentos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchEquipamentos() {
@@ -64,9 +66,21 @@ function EquipamentosPage() {
 
   return (
     <Box p={2}>
-      <Typography variant="h5" gutterBottom>
-        Lista de Equipamentos
-      </Typography>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
+        <Typography variant="h5">Lista de Equipamentos</Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate({ to: "/equipamentos/novo" })}
+        >
+          Novo Equipamento
+        </Button>
+      </Box>
       <Table>
         <TableHead>
           <TableRow>

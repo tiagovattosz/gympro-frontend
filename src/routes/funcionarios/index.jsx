@@ -8,8 +8,9 @@ import {
   Typography,
   Box,
   CircularProgress,
+  Button,
 } from "@mui/material";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AdminPanelSettings } from "@mui/icons-material";
 
 export const Route = createFileRoute("/funcionarios/")({
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/funcionarios/")({
 function FuncionariosPage() {
   const [funcionarios, setFuncionarios] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchFuncionarios() {
@@ -71,9 +73,21 @@ function FuncionariosPage() {
 
   return (
     <Box p={2}>
-      <Typography variant="h5" gutterBottom>
-        Lista de Funcionários
-      </Typography>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
+        <Typography variant="h5">Lista de Funcionários</Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate({ to: "/funcionarios/novo" })}
+        >
+          Novo Funcionário
+        </Button>
+      </Box>
       <Table>
         <TableHead>
           <TableRow>

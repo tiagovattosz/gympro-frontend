@@ -21,6 +21,13 @@ import { Route as EquipamentosIndexRouteImport } from './routes/equipamentos/ind
 import { Route as ClientesIndexRouteImport } from './routes/clientes/index'
 import { Route as CargosIndexRouteImport } from './routes/cargos/index'
 import { Route as AulasIndexRouteImport } from './routes/aulas/index'
+import { Route as PlanosNovoRouteImport } from './routes/planos/novo'
+import { Route as ModalidadesNovoRouteImport } from './routes/modalidades/novo'
+import { Route as FuncionariosNovoRouteImport } from './routes/funcionarios/novo'
+import { Route as EquipamentosNovoRouteImport } from './routes/equipamentos/novo'
+import { Route as ClientesNovoRouteImport } from './routes/clientes/novo'
+import { Route as CargosNovoRouteImport } from './routes/cargos/novo'
+import { Route as AulasNovoRouteImport } from './routes/aulas/novo'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -82,10 +89,52 @@ const AulasIndexRoute = AulasIndexRouteImport.update({
   path: '/aulas/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlanosNovoRoute = PlanosNovoRouteImport.update({
+  id: '/planos/novo',
+  path: '/planos/novo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModalidadesNovoRoute = ModalidadesNovoRouteImport.update({
+  id: '/modalidades/novo',
+  path: '/modalidades/novo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FuncionariosNovoRoute = FuncionariosNovoRouteImport.update({
+  id: '/funcionarios/novo',
+  path: '/funcionarios/novo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EquipamentosNovoRoute = EquipamentosNovoRouteImport.update({
+  id: '/equipamentos/novo',
+  path: '/equipamentos/novo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientesNovoRoute = ClientesNovoRouteImport.update({
+  id: '/clientes/novo',
+  path: '/clientes/novo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CargosNovoRoute = CargosNovoRouteImport.update({
+  id: '/cargos/novo',
+  path: '/cargos/novo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AulasNovoRoute = AulasNovoRouteImport.update({
+  id: '/aulas/novo',
+  path: '/aulas/novo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/aulas/novo': typeof AulasNovoRoute
+  '/cargos/novo': typeof CargosNovoRoute
+  '/clientes/novo': typeof ClientesNovoRoute
+  '/equipamentos/novo': typeof EquipamentosNovoRoute
+  '/funcionarios/novo': typeof FuncionariosNovoRoute
+  '/modalidades/novo': typeof ModalidadesNovoRoute
+  '/planos/novo': typeof PlanosNovoRoute
   '/aulas': typeof AulasIndexRoute
   '/cargos': typeof CargosIndexRoute
   '/clientes': typeof ClientesIndexRoute
@@ -100,6 +149,13 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/aulas/novo': typeof AulasNovoRoute
+  '/cargos/novo': typeof CargosNovoRoute
+  '/clientes/novo': typeof ClientesNovoRoute
+  '/equipamentos/novo': typeof EquipamentosNovoRoute
+  '/funcionarios/novo': typeof FuncionariosNovoRoute
+  '/modalidades/novo': typeof ModalidadesNovoRoute
+  '/planos/novo': typeof PlanosNovoRoute
   '/aulas': typeof AulasIndexRoute
   '/cargos': typeof CargosIndexRoute
   '/clientes': typeof ClientesIndexRoute
@@ -115,6 +171,13 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/aulas/novo': typeof AulasNovoRoute
+  '/cargos/novo': typeof CargosNovoRoute
+  '/clientes/novo': typeof ClientesNovoRoute
+  '/equipamentos/novo': typeof EquipamentosNovoRoute
+  '/funcionarios/novo': typeof FuncionariosNovoRoute
+  '/modalidades/novo': typeof ModalidadesNovoRoute
+  '/planos/novo': typeof PlanosNovoRoute
   '/aulas/': typeof AulasIndexRoute
   '/cargos/': typeof CargosIndexRoute
   '/clientes/': typeof ClientesIndexRoute
@@ -131,6 +194,13 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/aulas/novo'
+    | '/cargos/novo'
+    | '/clientes/novo'
+    | '/equipamentos/novo'
+    | '/funcionarios/novo'
+    | '/modalidades/novo'
+    | '/planos/novo'
     | '/aulas'
     | '/cargos'
     | '/clientes'
@@ -145,6 +215,13 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/aulas/novo'
+    | '/cargos/novo'
+    | '/clientes/novo'
+    | '/equipamentos/novo'
+    | '/funcionarios/novo'
+    | '/modalidades/novo'
+    | '/planos/novo'
     | '/aulas'
     | '/cargos'
     | '/clientes'
@@ -159,6 +236,13 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/login'
+    | '/aulas/novo'
+    | '/cargos/novo'
+    | '/clientes/novo'
+    | '/equipamentos/novo'
+    | '/funcionarios/novo'
+    | '/modalidades/novo'
+    | '/planos/novo'
     | '/aulas/'
     | '/cargos/'
     | '/clientes/'
@@ -174,6 +258,13 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  AulasNovoRoute: typeof AulasNovoRoute
+  CargosNovoRoute: typeof CargosNovoRoute
+  ClientesNovoRoute: typeof ClientesNovoRoute
+  EquipamentosNovoRoute: typeof EquipamentosNovoRoute
+  FuncionariosNovoRoute: typeof FuncionariosNovoRoute
+  ModalidadesNovoRoute: typeof ModalidadesNovoRoute
+  PlanosNovoRoute: typeof PlanosNovoRoute
   AulasIndexRoute: typeof AulasIndexRoute
   CargosIndexRoute: typeof CargosIndexRoute
   ClientesIndexRoute: typeof ClientesIndexRoute
@@ -272,12 +363,68 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AulasIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/planos/novo': {
+      id: '/planos/novo'
+      path: '/planos/novo'
+      fullPath: '/planos/novo'
+      preLoaderRoute: typeof PlanosNovoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modalidades/novo': {
+      id: '/modalidades/novo'
+      path: '/modalidades/novo'
+      fullPath: '/modalidades/novo'
+      preLoaderRoute: typeof ModalidadesNovoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/funcionarios/novo': {
+      id: '/funcionarios/novo'
+      path: '/funcionarios/novo'
+      fullPath: '/funcionarios/novo'
+      preLoaderRoute: typeof FuncionariosNovoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/equipamentos/novo': {
+      id: '/equipamentos/novo'
+      path: '/equipamentos/novo'
+      fullPath: '/equipamentos/novo'
+      preLoaderRoute: typeof EquipamentosNovoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clientes/novo': {
+      id: '/clientes/novo'
+      path: '/clientes/novo'
+      fullPath: '/clientes/novo'
+      preLoaderRoute: typeof ClientesNovoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cargos/novo': {
+      id: '/cargos/novo'
+      path: '/cargos/novo'
+      fullPath: '/cargos/novo'
+      preLoaderRoute: typeof CargosNovoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aulas/novo': {
+      id: '/aulas/novo'
+      path: '/aulas/novo'
+      fullPath: '/aulas/novo'
+      preLoaderRoute: typeof AulasNovoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  AulasNovoRoute: AulasNovoRoute,
+  CargosNovoRoute: CargosNovoRoute,
+  ClientesNovoRoute: ClientesNovoRoute,
+  EquipamentosNovoRoute: EquipamentosNovoRoute,
+  FuncionariosNovoRoute: FuncionariosNovoRoute,
+  ModalidadesNovoRoute: ModalidadesNovoRoute,
+  PlanosNovoRoute: PlanosNovoRoute,
   AulasIndexRoute: AulasIndexRoute,
   CargosIndexRoute: CargosIndexRoute,
   ClientesIndexRoute: ClientesIndexRoute,
