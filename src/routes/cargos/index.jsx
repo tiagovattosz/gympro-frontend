@@ -9,7 +9,13 @@ import {
   Box,
   CircularProgress,
   Button,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
+import { Delete as DeleteIcon } from "@mui/icons-material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/cargos/")({
@@ -19,40 +25,73 @@ export const Route = createFileRoute("/cargos/")({
 function CargosPage() {
   const [cargos, setCargos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cargoSelecionado, setCargoSelecionado] = useState(null);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchCargos() {
-      try {
-        const token = localStorage.getItem("auth_token");
-
-        const response = await fetch("/api/cargos", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Erro na requisição: " + response.status);
-        }
-
-        const data = await response.json();
-
-        const sorted = data.sort((a, b) =>
-          a.descricao.localeCompare(b.descricao, "pt-BR")
-        );
-
-        setCargos(sorted);
-      } catch (error) {
-        console.error("Erro ao buscar cargos:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchCargos();
   }, []);
+
+  async function fetchCargos() {
+    try {
+      const token = localStorage.getItem("auth_token");
+
+      const response = await fetch("/api/cargos", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro na requisição: " + response.status);
+      }
+
+      const data = await response.json();
+
+      const sorted = data.sort((a, b) =>
+        a.descricao.localeCompare(b.descricao, "pt-BR")
+      );
+
+      setCargos(sorted);
+    } catch (error) {
+      console.error("Erro ao buscar cargos:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function abrirDialogExclusao(cargo) {
+    setCargoSelecionado(cargo);
+    setConfirmDialogOpen(true);
+  }
+
+  async function excluirCargo() {
+    if (!cargoSelecionado) return;
+
+    try {
+      const token = localStorage.getItem("auth_token");
+
+      const response = await fetch(`/api/cargos/${cargoSelecionado.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao excluir cargo: " + response.status);
+      }
+
+      setCargos((prev) => prev.filter((c) => c.id !== cargoSelecionado.id));
+    } catch (error) {
+      console.error("Erro ao excluir cargo:", error);
+    } finally {
+      setConfirmDialogOpen(false);
+      setCargoSelecionado(null);
+    }
+  }
 
   if (loading) {
     return (
@@ -83,16 +122,43 @@ function CargosPage() {
         <TableHead>
           <TableRow>
             <TableCell>Descrição</TableCell>
+            <TableCell>Ações</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {cargos.map((cargo) => (
             <TableRow key={cargo.id}>
               <TableCell>{cargo.descricao}</TableCell>
+              <TableCell>
+                <IconButton
+                  color="error"
+                  onClick={() => abrirDialogExclusao(cargo)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      {/* Dialog de Confirmação */}
+      <Dialog
+        open={confirmDialogOpen}
+        onClose={() => setConfirmDialogOpen(false)}
+      >
+        <DialogTitle>Confirmar Exclusão</DialogTitle>
+        <DialogContent>
+          Deseja realmente excluir o cargo{" "}
+          <strong>{cargoSelecionado?.descricao}</strong>?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDialogOpen(false)}>Cancelar</Button>
+          <Button color="error" onClick={excluirCargo}>
+            Excluir
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

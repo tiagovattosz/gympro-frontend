@@ -9,8 +9,13 @@ import {
   Box,
   CircularProgress,
   Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
 } from "@mui/material";
-import { CheckCircle, Cancel } from "@mui/icons-material";
+import { CheckCircle, Cancel, Delete as DeleteIcon } from "@mui/icons-material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { differenceInCalendarDays } from "date-fns";
 
@@ -21,45 +26,76 @@ export const Route = createFileRoute("/clientes/")({
 function ClientesPage() {
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [clienteSelecionado, setClienteSelecionado] = useState(null);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchClientes() {
-      try {
-        const token = localStorage.getItem("auth_token");
-
-        const response = await fetch("/api/clientes", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Erro na requisição: " + response.status);
-        }
-
-        const data = await response.json();
-
-        const sorted = data.sort((a, b) =>
-          a.nome.localeCompare(b.nome, "pt-BR")
-        );
-
-        setClientes(sorted);
-      } catch (error) {
-        console.error("Erro ao buscar clientes:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchClientes();
   }, []);
 
-  function isAssinaturaAtiva(dataTermino) {
-    if (!dataTermino) {
-      return false;
+  async function fetchClientes() {
+    try {
+      const token = localStorage.getItem("auth_token");
+
+      const response = await fetch("/api/clientes", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro na requisição: " + response.status);
+      }
+
+      const data = await response.json();
+
+      const sorted = data.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+
+      setClientes(sorted);
+    } catch (error) {
+      console.error("Erro ao buscar clientes:", error);
+    } finally {
+      setLoading(false);
     }
+  }
+
+  async function excluirCliente() {
+    if (!clienteSelecionado) return;
+
+    try {
+      const token = localStorage.getItem("auth_token");
+
+      const response = await fetch(`/api/clientes/${clienteSelecionado.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao excluir cliente: " + response.status);
+      }
+
+      setClientes((prev) =>
+        prev.filter((cliente) => cliente.id !== clienteSelecionado.id)
+      );
+    } catch (error) {
+      console.error("Erro ao excluir cliente:", error);
+    } finally {
+      setConfirmDialogOpen(false);
+      setClienteSelecionado(null);
+    }
+  }
+
+  function abrirDialogExclusao(cliente) {
+    setClienteSelecionado(cliente);
+    setConfirmDialogOpen(true);
+  }
+
+  function isAssinaturaAtiva(dataTermino) {
+    if (!dataTermino) return false;
     return new Date(dataTermino) > new Date();
   }
 
@@ -74,7 +110,6 @@ function ClientesPage() {
   function diasRestantes(dataTermino) {
     const hoje = new Date();
     const termino = new Date(dataTermino);
-
     return differenceInCalendarDays(termino, hoje) + 1;
   }
 
@@ -113,6 +148,7 @@ function ClientesPage() {
             <TableCell>Celular</TableCell>
             <TableCell>Plano</TableCell>
             <TableCell>Status da Assinatura</TableCell>
+            <TableCell>Ações</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -141,10 +177,36 @@ function ClientesPage() {
                   </Box>
                 )}
               </TableCell>
+              <TableCell>
+                <IconButton
+                  color="error"
+                  onClick={() => abrirDialogExclusao(cliente)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      {/* Dialogo de confirmação */}
+      <Dialog
+        open={confirmDialogOpen}
+        onClose={() => setConfirmDialogOpen(false)}
+      >
+        <DialogTitle>Confirmar Exclusão</DialogTitle>
+        <DialogContent>
+          Deseja realmente excluir o cliente{" "}
+          <strong>{clienteSelecionado?.nome}</strong>?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDialogOpen(false)}>Cancelar</Button>
+          <Button color="error" onClick={excluirCliente}>
+            Excluir
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

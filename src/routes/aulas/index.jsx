@@ -9,8 +9,13 @@ import {
   Box,
   CircularProgress,
   Button,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
-import { CheckCircle, Cancel } from "@mui/icons-material";
+import { CheckCircle, Cancel, Delete as DeleteIcon } from "@mui/icons-material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/aulas/")({
@@ -20,6 +25,8 @@ export const Route = createFileRoute("/aulas/")({
 function AulasPage() {
   const [aulas, setAulas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [aulaSelecionada, setAulaSelecionada] = useState(null);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,17 +49,17 @@ function AulasPage() {
 
         const ordemDias = [
           "SEGUNDA",
-          "TERÇA",
+          "TERCA",
           "QUARTA",
           "QUINTA",
           "SEXTA",
-          "SÁBADO",
+          "SABADO",
           "DOMINGO",
         ];
 
         const sorted = data.sort((a, b) => {
-          const diaA = ordemDias.indexOf(a.diaDaSemana.toUpperCase());
-          const diaB = ordemDias.indexOf(b.diaDaSemana.toUpperCase());
+          const diaA = ordemDias.indexOf(a.diaDaSemana);
+          const diaB = ordemDias.indexOf(b.diaDaSemana);
 
           if (diaA !== diaB) return diaA - diaB;
 
@@ -72,6 +79,37 @@ function AulasPage() {
 
   function temVaga(aula) {
     return aula.numeroInscricoes < aula.maximoInscricoes;
+  }
+
+  function abrirDialogExclusao(aula) {
+    setAulaSelecionada(aula);
+    setConfirmDialogOpen(true);
+  }
+
+  async function excluirAula() {
+    if (!aulaSelecionada) return;
+
+    try {
+      const token = localStorage.getItem("auth_token");
+
+      const response = await fetch(`/api/aulas/${aulaSelecionada.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao excluir aula: " + response.status);
+      }
+
+      setAulas((prev) => prev.filter((a) => a.id !== aulaSelecionada.id));
+    } catch (error) {
+      console.error("Erro ao excluir aula:", error);
+    } finally {
+      setConfirmDialogOpen(false);
+      setAulaSelecionada(null);
+    }
   }
 
   if (loading) {
@@ -108,6 +146,7 @@ function AulasPage() {
             <TableCell>Horário</TableCell>
             <TableCell>Inscrições</TableCell>
             <TableCell>Vagas?</TableCell>
+            <TableCell>Ações</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -127,10 +166,37 @@ function AulasPage() {
                   <Cancel color="error" />
                 )}
               </TableCell>
+              <TableCell>
+                <IconButton
+                  color="error"
+                  onClick={() => abrirDialogExclusao(aula)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      {/* dialog de exclusao */}
+      <Dialog
+        open={confirmDialogOpen}
+        onClose={() => setConfirmDialogOpen(false)}
+      >
+        <DialogTitle>Confirmar Exclusão</DialogTitle>
+        <DialogContent>
+          Deseja realmente excluir a aula de{" "}
+          <strong>{aulaSelecionada?.modalidadeNome}</strong> com o professor{" "}
+          <strong>{aulaSelecionada?.professorNome}</strong>?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDialogOpen(false)}>Cancelar</Button>
+          <Button color="error" variant="contained" onClick={excluirAula}>
+            Excluir
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

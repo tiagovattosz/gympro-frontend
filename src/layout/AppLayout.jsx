@@ -14,6 +14,7 @@ import {
   Divider,
   CssBaseline,
   useMediaQuery,
+  ButtonBase,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -58,6 +59,10 @@ export default function AppLayout() {
       </Toolbar>
       <Divider />
       <List>
+        <ListItem button component={Link} to="/">
+          <ListItemText primary="Dashboard" />
+        </ListItem>
+
         <ListItem button component={Link} to="/clientes">
           <ListItemText primary="Clientes" />
         </ListItem>
@@ -102,7 +107,7 @@ export default function AppLayout() {
           </>
         )}
 
-        <ListItem button onClick={handleLogout}>
+        <ListItem button component={ButtonBase} onClick={handleLogout}>
           <LogoutIcon sx={{ mr: 1 }} />
           <ListItemText primary="Sair" />
         </ListItem>
