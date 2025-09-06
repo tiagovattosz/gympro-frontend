@@ -9,9 +9,15 @@ import {
   Box,
   CircularProgress,
   Button,
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { AdminPanelSettings } from "@mui/icons-material";
+import { AdminPanelSettings, Delete } from "@mui/icons-material";
 
 export const Route = createFileRoute("/funcionarios/")({
   component: FuncionariosPage,
@@ -20,40 +26,76 @@ export const Route = createFileRoute("/funcionarios/")({
 function FuncionariosPage() {
   const [funcionarios, setFuncionarios] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedFuncionario, setSelectedFuncionario] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchFuncionarios() {
-      try {
-        const token = localStorage.getItem("auth_token");
-
-        const response = await fetch("/api/funcionarios", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Erro na requisição: " + response.status);
-        }
-
-        const data = await response.json();
-
-        const sorted = data.sort((a, b) =>
-          a.nome.localeCompare(b.nome, "pt-BR")
-        );
-
-        setFuncionarios(sorted);
-      } catch (error) {
-        console.error("Erro ao buscar funcionários:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchFuncionarios();
   }, []);
+
+  async function fetchFuncionarios() {
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch("/api/funcionarios", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok)
+        throw new Error("Erro na requisição: " + response.status);
+
+      const data = await response.json();
+      const sorted = data.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+      setFuncionarios(sorted);
+    } catch (error) {
+      console.error("Erro ao buscar funcionários:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleDeleteClick(func) {
+    setSelectedFuncionario(func);
+    setOpenDialog(true);
+  }
+
+  function handleCloseDialog() {
+    setOpenDialog(false);
+    setSelectedFuncionario(null);
+  }
+
+  async function handleConfirmDelete() {
+    if (!selectedFuncionario) return;
+
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch(
+        `/api/funcionarios/${selectedFuncionario.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Erro ao excluir funcionário");
+      }
+
+      setFuncionarios((prev) =>
+        prev.filter((f) => f.id !== selectedFuncionario.id)
+      );
+    } catch (error) {
+      console.error("Erro ao excluir:", error);
+      alert("Erro ao excluir funcionário.");
+    } finally {
+      handleCloseDialog();
+    }
+  }
 
   function formatCPF(cpf) {
     return cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
@@ -96,6 +138,7 @@ function FuncionariosPage() {
             <TableCell>CPF</TableCell>
             <TableCell>Celular</TableCell>
             <TableCell>Cargo</TableCell>
+            <TableCell>Ações</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -109,15 +152,39 @@ function FuncionariosPage() {
                   {func.nome}
                 </Box>
               </TableCell>
-
               <TableCell>{func.matricula}</TableCell>
               <TableCell>{formatCPF(func.cpf)}</TableCell>
               <TableCell>{formatCelular(func.celular)}</TableCell>
               <TableCell>{func.cargo || "-"}</TableCell>
+              <TableCell>
+                <IconButton
+                  color="error"
+                  onClick={() => handleDeleteClick(func)}
+                >
+                  <Delete />
+                </IconButton>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      {/* Dialog de Confirmação */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Confirmar Exclusão</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Tem certeza que deseja excluir o funcionário{" "}
+            <strong>{selectedFuncionario?.nome}</strong>?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancelar</Button>
+          <Button color="error" onClick={handleConfirmDelete}>
+            Excluir
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
