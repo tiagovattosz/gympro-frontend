@@ -26,6 +26,8 @@ import { Route as ModalidadesNovoRouteImport } from './routes/modalidades/novo'
 import { Route as FuncionariosNovoRouteImport } from './routes/funcionarios/novo'
 import { Route as EquipamentosNovoRouteImport } from './routes/equipamentos/novo'
 import { Route as ClientesNovoRouteImport } from './routes/clientes/novo'
+import { Route as CatracaSaidaRouteImport } from './routes/catraca/saida'
+import { Route as CatracaEntradaRouteImport } from './routes/catraca/entrada'
 import { Route as CargosNovoRouteImport } from './routes/cargos/novo'
 import { Route as AulasNovoRouteImport } from './routes/aulas/novo'
 import { Route as PlanosIdEditarRouteImport } from './routes/planos/$id.editar'
@@ -121,6 +123,16 @@ const ClientesNovoRoute = ClientesNovoRouteImport.update({
   path: '/clientes/novo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CatracaSaidaRoute = CatracaSaidaRouteImport.update({
+  id: '/catraca/saida',
+  path: '/catraca/saida',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CatracaEntradaRoute = CatracaEntradaRouteImport.update({
+  id: '/catraca/entrada',
+  path: '/catraca/entrada',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CargosNovoRoute = CargosNovoRouteImport.update({
   id: '/cargos/novo',
   path: '/cargos/novo',
@@ -172,6 +184,8 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/aulas/novo': typeof AulasNovoRoute
   '/cargos/novo': typeof CargosNovoRoute
+  '/catraca/entrada': typeof CatracaEntradaRoute
+  '/catraca/saida': typeof CatracaSaidaRoute
   '/clientes/novo': typeof ClientesNovoRoute
   '/equipamentos/novo': typeof EquipamentosNovoRoute
   '/funcionarios/novo': typeof FuncionariosNovoRoute
@@ -200,6 +214,8 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/aulas/novo': typeof AulasNovoRoute
   '/cargos/novo': typeof CargosNovoRoute
+  '/catraca/entrada': typeof CatracaEntradaRoute
+  '/catraca/saida': typeof CatracaSaidaRoute
   '/clientes/novo': typeof ClientesNovoRoute
   '/equipamentos/novo': typeof EquipamentosNovoRoute
   '/funcionarios/novo': typeof FuncionariosNovoRoute
@@ -229,6 +245,8 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/aulas/novo': typeof AulasNovoRoute
   '/cargos/novo': typeof CargosNovoRoute
+  '/catraca/entrada': typeof CatracaEntradaRoute
+  '/catraca/saida': typeof CatracaSaidaRoute
   '/clientes/novo': typeof ClientesNovoRoute
   '/equipamentos/novo': typeof EquipamentosNovoRoute
   '/funcionarios/novo': typeof FuncionariosNovoRoute
@@ -259,6 +277,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/aulas/novo'
     | '/cargos/novo'
+    | '/catraca/entrada'
+    | '/catraca/saida'
     | '/clientes/novo'
     | '/equipamentos/novo'
     | '/funcionarios/novo'
@@ -287,6 +307,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/aulas/novo'
     | '/cargos/novo'
+    | '/catraca/entrada'
+    | '/catraca/saida'
     | '/clientes/novo'
     | '/equipamentos/novo'
     | '/funcionarios/novo'
@@ -315,6 +337,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/aulas/novo'
     | '/cargos/novo'
+    | '/catraca/entrada'
+    | '/catraca/saida'
     | '/clientes/novo'
     | '/equipamentos/novo'
     | '/funcionarios/novo'
@@ -344,6 +368,8 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   AulasNovoRoute: typeof AulasNovoRoute
   CargosNovoRoute: typeof CargosNovoRoute
+  CatracaEntradaRoute: typeof CatracaEntradaRoute
+  CatracaSaidaRoute: typeof CatracaSaidaRoute
   ClientesNovoRoute: typeof ClientesNovoRoute
   EquipamentosNovoRoute: typeof EquipamentosNovoRoute
   FuncionariosNovoRoute: typeof FuncionariosNovoRoute
@@ -489,6 +515,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientesNovoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/catraca/saida': {
+      id: '/catraca/saida'
+      path: '/catraca/saida'
+      fullPath: '/catraca/saida'
+      preLoaderRoute: typeof CatracaSaidaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/catraca/entrada': {
+      id: '/catraca/entrada'
+      path: '/catraca/entrada'
+      fullPath: '/catraca/entrada'
+      preLoaderRoute: typeof CatracaEntradaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cargos/novo': {
       id: '/cargos/novo'
       path: '/cargos/novo'
@@ -560,6 +600,8 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   AulasNovoRoute: AulasNovoRoute,
   CargosNovoRoute: CargosNovoRoute,
+  CatracaEntradaRoute: CatracaEntradaRoute,
+  CatracaSaidaRoute: CatracaSaidaRoute,
   ClientesNovoRoute: ClientesNovoRoute,
   EquipamentosNovoRoute: EquipamentosNovoRoute,
   FuncionariosNovoRoute: FuncionariosNovoRoute,

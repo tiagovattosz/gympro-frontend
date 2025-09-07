@@ -104,6 +104,14 @@ export default function AppLayout() {
             <ListItem button component={Link} to="/movimentos">
               <ListItemText primary="Movimentos" />
             </ListItem>
+
+            <ListItem button component={Link} to="/catraca/entrada">
+              <ListItemText primary="Catraca Entrada" />
+            </ListItem>
+
+            <ListItem button component={Link} to="/catraca/saida">
+              <ListItemText primary="Catraca Saida" />
+            </ListItem>
           </>
         )}
 

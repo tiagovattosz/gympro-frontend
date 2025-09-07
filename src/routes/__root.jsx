@@ -8,10 +8,15 @@ export const Route = createRootRoute({
     const matchRoute = useMatchRoute();
 
     const isLoginPage = matchRoute({ to: "/login", fuzzy: false });
+    const isCatracaEntrada = matchRoute({
+      to: "/catraca/entrada",
+      fuzzy: false,
+    });
+    const isCatracaSaida = matchRoute({ to: "/catraca/saida", fuzzy: false });
 
     return (
       <>
-        {isLoginPage ? (
+        {isLoginPage || isCatracaEntrada || isCatracaSaida ? (
           <Outlet />
         ) : (
           <AppLayout>
