@@ -73,9 +73,7 @@ function NovaAulaPage() {
 
   function validate() {
     const newErrors = {};
-    if (!form.modalidadeId)
-      newErrors.modalidadeId = "Selecione uma modalidade.";
-    if (!form.professorId) newErrors.professorId = "Selecione um professor.";
+    // Agora só valida campos obrigatórios:
     if (!form.diaDaSemana) newErrors.diaDaSemana = "Selecione o dia da semana.";
     if (!form.horario) newErrors.horario = "Horário é obrigatório.";
     if (
@@ -111,8 +109,8 @@ function NovaAulaPage() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          modalidadeId: Number(form.modalidadeId),
-          professorId: Number(form.professorId),
+          modalidadeId: form.modalidadeId ? Number(form.modalidadeId) : null,
+          professorId: form.professorId ? Number(form.professorId) : null,
           diaDaSemana: form.diaDaSemana,
           horario: form.horario,
           maximoInscricoes: Number(form.maximoInscricoes),
@@ -156,12 +154,8 @@ function NovaAulaPage() {
       )}
 
       <form onSubmit={handleSubmit} noValidate>
-        <FormControl
-          fullWidth
-          margin="normal"
-          required
-          error={!!errors.modalidadeId}
-        >
+        {/* Modalidade (agora opcional) */}
+        <FormControl fullWidth margin="normal" error={!!errors.modalidadeId}>
           <InputLabel>Modalidade</InputLabel>
           <Select
             name="modalidadeId"
@@ -169,6 +163,9 @@ function NovaAulaPage() {
             label="Modalidade"
             onChange={handleChange}
           >
+            <MenuItem value="">
+              <em>Nenhuma</em>
+            </MenuItem>
             {modalidades.map((m) => (
               <MenuItem key={m.id} value={m.id}>
                 {m.descricao}
@@ -177,12 +174,8 @@ function NovaAulaPage() {
           </Select>
         </FormControl>
 
-        <FormControl
-          fullWidth
-          margin="normal"
-          required
-          error={!!errors.professorId}
-        >
+        {/* Professor (agora opcional) */}
+        <FormControl fullWidth margin="normal" error={!!errors.professorId}>
           <InputLabel>Professor</InputLabel>
           <Select
             name="professorId"
@@ -190,6 +183,9 @@ function NovaAulaPage() {
             label="Professor"
             onChange={handleChange}
           >
+            <MenuItem value="">
+              <em>Nenhum</em>
+            </MenuItem>
             {professores.map((p) => (
               <MenuItem key={p.id} value={p.id}>
                 {p.nome}
@@ -198,6 +194,7 @@ function NovaAulaPage() {
           </Select>
         </FormControl>
 
+        {/* Dia da Semana */}
         <FormControl
           fullWidth
           margin="normal"
@@ -219,6 +216,7 @@ function NovaAulaPage() {
           </Select>
         </FormControl>
 
+        {/* Horário */}
         <TextField
           label="Horário"
           name="horario"
@@ -229,11 +227,12 @@ function NovaAulaPage() {
           margin="normal"
           required
           InputLabelProps={{ shrink: true }}
-          inputProps={{ step: 300 }} // 5 minutos
+          inputProps={{ step: 300 }}
           error={!!errors.horario}
           helperText={errors.horario}
         />
 
+        {/* Máximo de Inscrições */}
         <TextField
           label="Máximo de Inscrições"
           name="maximoInscricoes"

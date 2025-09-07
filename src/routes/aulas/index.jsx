@@ -152,8 +152,8 @@ function AulasPage() {
         <TableBody>
           {aulas.map((aula) => (
             <TableRow key={aula.id}>
-              <TableCell>{aula.modalidadeNome}</TableCell>
-              <TableCell>{aula.professorNome}</TableCell>
+              <TableCell>{aula.modalidadeNome ?? "-"}</TableCell>
+              <TableCell>{aula.professorNome ?? "-"}</TableCell>
               <TableCell>{aula.diaDaSemana}</TableCell>
               <TableCell>{aula.horario}</TableCell>
               <TableCell>
