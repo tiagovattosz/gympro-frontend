@@ -28,6 +28,13 @@ import { Route as EquipamentosNovoRouteImport } from './routes/equipamentos/novo
 import { Route as ClientesNovoRouteImport } from './routes/clientes/novo'
 import { Route as CargosNovoRouteImport } from './routes/cargos/novo'
 import { Route as AulasNovoRouteImport } from './routes/aulas/novo'
+import { Route as PlanosIdEditarRouteImport } from './routes/planos/$id.editar'
+import { Route as ModalidadesIdEditarRouteImport } from './routes/modalidades/$id.editar'
+import { Route as FuncionariosIdEditarRouteImport } from './routes/funcionarios/$id.editar'
+import { Route as EquipamentosIdEditarRouteImport } from './routes/equipamentos/$id.editar'
+import { Route as ClientesIdEditarRouteImport } from './routes/clientes/$id.editar'
+import { Route as CargosIdEditarRouteImport } from './routes/cargos/$id.editar'
+import { Route as AulasIdEditarRouteImport } from './routes/aulas/$id.editar'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -124,6 +131,41 @@ const AulasNovoRoute = AulasNovoRouteImport.update({
   path: '/aulas/novo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlanosIdEditarRoute = PlanosIdEditarRouteImport.update({
+  id: '/planos/$id/editar',
+  path: '/planos/$id/editar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModalidadesIdEditarRoute = ModalidadesIdEditarRouteImport.update({
+  id: '/modalidades/$id/editar',
+  path: '/modalidades/$id/editar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FuncionariosIdEditarRoute = FuncionariosIdEditarRouteImport.update({
+  id: '/funcionarios/$id/editar',
+  path: '/funcionarios/$id/editar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EquipamentosIdEditarRoute = EquipamentosIdEditarRouteImport.update({
+  id: '/equipamentos/$id/editar',
+  path: '/equipamentos/$id/editar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientesIdEditarRoute = ClientesIdEditarRouteImport.update({
+  id: '/clientes/$id/editar',
+  path: '/clientes/$id/editar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CargosIdEditarRoute = CargosIdEditarRouteImport.update({
+  id: '/cargos/$id/editar',
+  path: '/cargos/$id/editar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AulasIdEditarRoute = AulasIdEditarRouteImport.update({
+  id: '/aulas/$id/editar',
+  path: '/aulas/$id/editar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -145,6 +187,13 @@ export interface FileRoutesByFullPath {
   '/modalidades': typeof ModalidadesIndexRoute
   '/movimentos': typeof MovimentosIndexRoute
   '/planos': typeof PlanosIndexRoute
+  '/aulas/$id/editar': typeof AulasIdEditarRoute
+  '/cargos/$id/editar': typeof CargosIdEditarRoute
+  '/clientes/$id/editar': typeof ClientesIdEditarRoute
+  '/equipamentos/$id/editar': typeof EquipamentosIdEditarRoute
+  '/funcionarios/$id/editar': typeof FuncionariosIdEditarRoute
+  '/modalidades/$id/editar': typeof ModalidadesIdEditarRoute
+  '/planos/$id/editar': typeof PlanosIdEditarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -166,6 +215,13 @@ export interface FileRoutesByTo {
   '/modalidades': typeof ModalidadesIndexRoute
   '/movimentos': typeof MovimentosIndexRoute
   '/planos': typeof PlanosIndexRoute
+  '/aulas/$id/editar': typeof AulasIdEditarRoute
+  '/cargos/$id/editar': typeof CargosIdEditarRoute
+  '/clientes/$id/editar': typeof ClientesIdEditarRoute
+  '/equipamentos/$id/editar': typeof EquipamentosIdEditarRoute
+  '/funcionarios/$id/editar': typeof FuncionariosIdEditarRoute
+  '/modalidades/$id/editar': typeof ModalidadesIdEditarRoute
+  '/planos/$id/editar': typeof PlanosIdEditarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -188,6 +244,13 @@ export interface FileRoutesById {
   '/modalidades/': typeof ModalidadesIndexRoute
   '/movimentos/': typeof MovimentosIndexRoute
   '/planos/': typeof PlanosIndexRoute
+  '/aulas/$id/editar': typeof AulasIdEditarRoute
+  '/cargos/$id/editar': typeof CargosIdEditarRoute
+  '/clientes/$id/editar': typeof ClientesIdEditarRoute
+  '/equipamentos/$id/editar': typeof EquipamentosIdEditarRoute
+  '/funcionarios/$id/editar': typeof FuncionariosIdEditarRoute
+  '/modalidades/$id/editar': typeof ModalidadesIdEditarRoute
+  '/planos/$id/editar': typeof PlanosIdEditarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -211,6 +274,13 @@ export interface FileRouteTypes {
     | '/modalidades'
     | '/movimentos'
     | '/planos'
+    | '/aulas/$id/editar'
+    | '/cargos/$id/editar'
+    | '/clientes/$id/editar'
+    | '/equipamentos/$id/editar'
+    | '/funcionarios/$id/editar'
+    | '/modalidades/$id/editar'
+    | '/planos/$id/editar'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -232,6 +302,13 @@ export interface FileRouteTypes {
     | '/modalidades'
     | '/movimentos'
     | '/planos'
+    | '/aulas/$id/editar'
+    | '/cargos/$id/editar'
+    | '/clientes/$id/editar'
+    | '/equipamentos/$id/editar'
+    | '/funcionarios/$id/editar'
+    | '/modalidades/$id/editar'
+    | '/planos/$id/editar'
   id:
     | '__root__'
     | '/'
@@ -253,6 +330,13 @@ export interface FileRouteTypes {
     | '/modalidades/'
     | '/movimentos/'
     | '/planos/'
+    | '/aulas/$id/editar'
+    | '/cargos/$id/editar'
+    | '/clientes/$id/editar'
+    | '/equipamentos/$id/editar'
+    | '/funcionarios/$id/editar'
+    | '/modalidades/$id/editar'
+    | '/planos/$id/editar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -275,6 +359,13 @@ export interface RootRouteChildren {
   ModalidadesIndexRoute: typeof ModalidadesIndexRoute
   MovimentosIndexRoute: typeof MovimentosIndexRoute
   PlanosIndexRoute: typeof PlanosIndexRoute
+  AulasIdEditarRoute: typeof AulasIdEditarRoute
+  CargosIdEditarRoute: typeof CargosIdEditarRoute
+  ClientesIdEditarRoute: typeof ClientesIdEditarRoute
+  EquipamentosIdEditarRoute: typeof EquipamentosIdEditarRoute
+  FuncionariosIdEditarRoute: typeof FuncionariosIdEditarRoute
+  ModalidadesIdEditarRoute: typeof ModalidadesIdEditarRoute
+  PlanosIdEditarRoute: typeof PlanosIdEditarRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -412,6 +503,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AulasNovoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/planos/$id/editar': {
+      id: '/planos/$id/editar'
+      path: '/planos/$id/editar'
+      fullPath: '/planos/$id/editar'
+      preLoaderRoute: typeof PlanosIdEditarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modalidades/$id/editar': {
+      id: '/modalidades/$id/editar'
+      path: '/modalidades/$id/editar'
+      fullPath: '/modalidades/$id/editar'
+      preLoaderRoute: typeof ModalidadesIdEditarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/funcionarios/$id/editar': {
+      id: '/funcionarios/$id/editar'
+      path: '/funcionarios/$id/editar'
+      fullPath: '/funcionarios/$id/editar'
+      preLoaderRoute: typeof FuncionariosIdEditarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/equipamentos/$id/editar': {
+      id: '/equipamentos/$id/editar'
+      path: '/equipamentos/$id/editar'
+      fullPath: '/equipamentos/$id/editar'
+      preLoaderRoute: typeof EquipamentosIdEditarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clientes/$id/editar': {
+      id: '/clientes/$id/editar'
+      path: '/clientes/$id/editar'
+      fullPath: '/clientes/$id/editar'
+      preLoaderRoute: typeof ClientesIdEditarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cargos/$id/editar': {
+      id: '/cargos/$id/editar'
+      path: '/cargos/$id/editar'
+      fullPath: '/cargos/$id/editar'
+      preLoaderRoute: typeof CargosIdEditarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aulas/$id/editar': {
+      id: '/aulas/$id/editar'
+      path: '/aulas/$id/editar'
+      fullPath: '/aulas/$id/editar'
+      preLoaderRoute: typeof AulasIdEditarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -435,6 +575,13 @@ const rootRouteChildren: RootRouteChildren = {
   ModalidadesIndexRoute: ModalidadesIndexRoute,
   MovimentosIndexRoute: MovimentosIndexRoute,
   PlanosIndexRoute: PlanosIndexRoute,
+  AulasIdEditarRoute: AulasIdEditarRoute,
+  CargosIdEditarRoute: CargosIdEditarRoute,
+  ClientesIdEditarRoute: ClientesIdEditarRoute,
+  EquipamentosIdEditarRoute: EquipamentosIdEditarRoute,
+  FuncionariosIdEditarRoute: FuncionariosIdEditarRoute,
+  ModalidadesIdEditarRoute: ModalidadesIdEditarRoute,
+  PlanosIdEditarRoute: PlanosIdEditarRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

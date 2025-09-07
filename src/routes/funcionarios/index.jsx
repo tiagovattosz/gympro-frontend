@@ -17,7 +17,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { AdminPanelSettings, Delete } from "@mui/icons-material";
+import { AdminPanelSettings, Delete, Edit } from "@mui/icons-material";
 
 export const Route = createFileRoute("/funcionarios/")({
   component: FuncionariosPage,
@@ -157,6 +157,14 @@ function FuncionariosPage() {
               <TableCell>{formatCelular(func.celular)}</TableCell>
               <TableCell>{func.cargo || "-"}</TableCell>
               <TableCell>
+                <IconButton
+                  color="primary"
+                  onClick={() =>
+                    navigate({ to: `/funcionarios/${func.id}/editar` })
+                  }
+                >
+                  <Edit />
+                </IconButton>
                 <IconButton
                   color="error"
                   onClick={() => handleDeleteClick(func)}

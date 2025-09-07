@@ -15,7 +15,12 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import { CheckCircle, Cancel, Delete as DeleteIcon } from "@mui/icons-material";
+import {
+  CheckCircle,
+  Cancel,
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+} from "@mui/icons-material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/aulas/")({
@@ -168,6 +173,12 @@ function AulasPage() {
               </TableCell>
               <TableCell>
                 <IconButton
+                  color="primary"
+                  onClick={() => navigate({ to: `/aulas/${aula.id}/editar` })}
+                >
+                  <EditIcon />
+                </IconButton>
+                <IconButton
                   color="error"
                   onClick={() => abrirDialogExclusao(aula)}
                 >
@@ -179,7 +190,7 @@ function AulasPage() {
         </TableBody>
       </Table>
 
-      {/* dialog de exclusao */}
+      {/* Dialogo de exclusão */}
       <Dialog
         open={confirmDialogOpen}
         onClose={() => setConfirmDialogOpen(false)}

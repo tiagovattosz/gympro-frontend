@@ -15,7 +15,7 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import { Delete as DeleteIcon } from "@mui/icons-material";
+import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/cargos/")({
@@ -130,6 +130,15 @@ function CargosPage() {
             <TableRow key={cargo.id}>
               <TableCell>{cargo.descricao}</TableCell>
               <TableCell>
+                {/* Botão de Edição */}
+                <IconButton
+                  color="primary"
+                  onClick={() => navigate({ to: `/cargos/${cargo.id}/editar` })}
+                >
+                  <EditIcon />
+                </IconButton>
+
+                {/* Botão de Exclusão */}
                 <IconButton
                   color="error"
                   onClick={() => abrirDialogExclusao(cargo)}

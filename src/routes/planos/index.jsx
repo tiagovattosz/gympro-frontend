@@ -15,7 +15,7 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import { Delete as DeleteIcon } from "@mui/icons-material";
+import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/planos/")({
@@ -49,7 +49,6 @@ function PlanosPage() {
       }
 
       const data = await response.json();
-
       const sorted = data.sort((a, b) => a.valor - b.valor);
 
       setPlanos(sorted);
@@ -145,6 +144,15 @@ function PlanosPage() {
               <TableCell>{plano.duracaoEmMeses}</TableCell>
               <TableCell>{plano.detalhes || "-"}</TableCell>
               <TableCell>
+                {/* Botão de edição */}
+                <IconButton
+                  color="primary"
+                  onClick={() => navigate({ to: `/planos/${plano.id}/editar` })}
+                >
+                  <EditIcon />
+                </IconButton>
+
+                {/* Botão de exclusão */}
                 <IconButton
                   color="error"
                   onClick={() => abrirDialogExclusao(plano)}

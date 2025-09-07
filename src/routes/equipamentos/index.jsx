@@ -18,7 +18,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { CheckCircle, Cancel, Delete } from "@mui/icons-material";
+import { CheckCircle, Cancel, Delete, Edit } from "@mui/icons-material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/equipamentos/")({
@@ -150,6 +150,14 @@ function EquipamentosPage() {
                 </Box>
               </TableCell>
               <TableCell>
+                <IconButton
+                  color="primary"
+                  onClick={() =>
+                    navigate({ to: `/equipamentos/${eq.id}/editar` })
+                  }
+                >
+                  <Edit />
+                </IconButton>
                 <IconButton color="error" onClick={() => setSelected(eq)}>
                   <Delete />
                 </IconButton>

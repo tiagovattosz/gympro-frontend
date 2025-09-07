@@ -17,7 +17,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Delete } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
 
 export const Route = createFileRoute("/modalidades/")({
   component: ModalidadesPage,
@@ -138,6 +138,17 @@ function ModalidadesPage() {
             <TableRow key={modalidade.id}>
               <TableCell>{modalidade.descricao}</TableCell>
               <TableCell>
+                {/* Botão de Editar */}
+                <IconButton
+                  color="primary"
+                  onClick={() =>
+                    navigate({ to: `/modalidades/${modalidade.id}/editar` })
+                  }
+                >
+                  <Edit />
+                </IconButton>
+
+                {/* Botão de Deletar */}
                 <IconButton
                   color="error"
                   onClick={() => handleDeleteClick(modalidade)}

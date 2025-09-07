@@ -15,7 +15,12 @@ import {
   DialogActions,
   IconButton,
 } from "@mui/material";
-import { CheckCircle, Cancel, Delete as DeleteIcon } from "@mui/icons-material";
+import {
+  CheckCircle,
+  Cancel,
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+} from "@mui/icons-material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { differenceInCalendarDays } from "date-fns";
 
@@ -178,6 +183,14 @@ function ClientesPage() {
                 )}
               </TableCell>
               <TableCell>
+                <IconButton
+                  color="primary"
+                  onClick={() =>
+                    navigate({ to: `/clientes/${cliente.id}/editar` })
+                  }
+                >
+                  <EditIcon />
+                </IconButton>
                 <IconButton
                   color="error"
                   onClick={() => abrirDialogExclusao(cliente)}
