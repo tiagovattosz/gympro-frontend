@@ -23,6 +23,7 @@ import { Route as CargosIndexRouteImport } from './routes/cargos/index'
 import { Route as AulasIndexRouteImport } from './routes/aulas/index'
 import { Route as PlanosNovoRouteImport } from './routes/planos/novo'
 import { Route as ModalidadesNovoRouteImport } from './routes/modalidades/novo'
+import { Route as ManutencoesNovoRouteImport } from './routes/manutencoes/novo'
 import { Route as FuncionariosNovoRouteImport } from './routes/funcionarios/novo'
 import { Route as EquipamentosNovoRouteImport } from './routes/equipamentos/novo'
 import { Route as ClientesNovoRouteImport } from './routes/clientes/novo'
@@ -108,6 +109,11 @@ const ModalidadesNovoRoute = ModalidadesNovoRouteImport.update({
   path: '/modalidades/novo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ManutencoesNovoRoute = ManutencoesNovoRouteImport.update({
+  id: '/manutencoes/novo',
+  path: '/manutencoes/novo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FuncionariosNovoRoute = FuncionariosNovoRouteImport.update({
   id: '/funcionarios/novo',
   path: '/funcionarios/novo',
@@ -189,6 +195,7 @@ export interface FileRoutesByFullPath {
   '/clientes/novo': typeof ClientesNovoRoute
   '/equipamentos/novo': typeof EquipamentosNovoRoute
   '/funcionarios/novo': typeof FuncionariosNovoRoute
+  '/manutencoes/novo': typeof ManutencoesNovoRoute
   '/modalidades/novo': typeof ModalidadesNovoRoute
   '/planos/novo': typeof PlanosNovoRoute
   '/aulas': typeof AulasIndexRoute
@@ -219,6 +226,7 @@ export interface FileRoutesByTo {
   '/clientes/novo': typeof ClientesNovoRoute
   '/equipamentos/novo': typeof EquipamentosNovoRoute
   '/funcionarios/novo': typeof FuncionariosNovoRoute
+  '/manutencoes/novo': typeof ManutencoesNovoRoute
   '/modalidades/novo': typeof ModalidadesNovoRoute
   '/planos/novo': typeof PlanosNovoRoute
   '/aulas': typeof AulasIndexRoute
@@ -250,6 +258,7 @@ export interface FileRoutesById {
   '/clientes/novo': typeof ClientesNovoRoute
   '/equipamentos/novo': typeof EquipamentosNovoRoute
   '/funcionarios/novo': typeof FuncionariosNovoRoute
+  '/manutencoes/novo': typeof ManutencoesNovoRoute
   '/modalidades/novo': typeof ModalidadesNovoRoute
   '/planos/novo': typeof PlanosNovoRoute
   '/aulas/': typeof AulasIndexRoute
@@ -282,6 +291,7 @@ export interface FileRouteTypes {
     | '/clientes/novo'
     | '/equipamentos/novo'
     | '/funcionarios/novo'
+    | '/manutencoes/novo'
     | '/modalidades/novo'
     | '/planos/novo'
     | '/aulas'
@@ -312,6 +322,7 @@ export interface FileRouteTypes {
     | '/clientes/novo'
     | '/equipamentos/novo'
     | '/funcionarios/novo'
+    | '/manutencoes/novo'
     | '/modalidades/novo'
     | '/planos/novo'
     | '/aulas'
@@ -342,6 +353,7 @@ export interface FileRouteTypes {
     | '/clientes/novo'
     | '/equipamentos/novo'
     | '/funcionarios/novo'
+    | '/manutencoes/novo'
     | '/modalidades/novo'
     | '/planos/novo'
     | '/aulas/'
@@ -373,6 +385,7 @@ export interface RootRouteChildren {
   ClientesNovoRoute: typeof ClientesNovoRoute
   EquipamentosNovoRoute: typeof EquipamentosNovoRoute
   FuncionariosNovoRoute: typeof FuncionariosNovoRoute
+  ManutencoesNovoRoute: typeof ManutencoesNovoRoute
   ModalidadesNovoRoute: typeof ModalidadesNovoRoute
   PlanosNovoRoute: typeof PlanosNovoRoute
   AulasIndexRoute: typeof AulasIndexRoute
@@ -494,6 +507,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModalidadesNovoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/manutencoes/novo': {
+      id: '/manutencoes/novo'
+      path: '/manutencoes/novo'
+      fullPath: '/manutencoes/novo'
+      preLoaderRoute: typeof ManutencoesNovoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/funcionarios/novo': {
       id: '/funcionarios/novo'
       path: '/funcionarios/novo'
@@ -605,6 +625,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClientesNovoRoute: ClientesNovoRoute,
   EquipamentosNovoRoute: EquipamentosNovoRoute,
   FuncionariosNovoRoute: FuncionariosNovoRoute,
+  ManutencoesNovoRoute: ManutencoesNovoRoute,
   ModalidadesNovoRoute: ModalidadesNovoRoute,
   PlanosNovoRoute: PlanosNovoRoute,
   AulasIndexRoute: AulasIndexRoute,
