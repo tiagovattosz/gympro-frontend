@@ -11,16 +11,42 @@ import {
   List,
   ListItem,
   ListItemText,
+  ListItemIcon,
   Divider,
   CssBaseline,
   useMediaQuery,
   ButtonBase,
+  Avatar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
+import HomeIcon from "@mui/icons-material/Home";
+import PeopleIcon from "@mui/icons-material/People";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import EventIcon from "@mui/icons-material/Event";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 import { useTheme } from "@mui/material/styles";
 
 const drawerWidth = 240;
+
+const menuItems = [
+  { text: "Dashboard", icon: <HomeIcon />, path: "/" },
+  { text: "Clientes", icon: <PeopleIcon />, path: "/clientes" },
+  { text: "Manutenções", icon: <AssignmentIcon />, path: "/manutencoes" },
+  { text: "Aulas", icon: <EventIcon />, path: "/aulas" },
+  { text: "Modalidades", icon: <FitnessCenterIcon />, path: "/modalidades" },
+  { text: "Inscrições", icon: <PeopleIcon />, path: "/inscricoes" },
+  { text: "Equipamentos", icon: <FitnessCenterIcon />, path: "/equipamentos" },
+];
+
+const adminItems = [
+  { text: "Cargos", icon: <AssignmentIcon />, path: "/cargos" },
+  { text: "Planos", icon: <EventIcon />, path: "/planos" },
+  { text: "Funcionários", icon: <PeopleIcon />, path: "/funcionarios" },
+  { text: "Movimentos", icon: <AssignmentIcon />, path: "/movimentos" },
+  { text: "Catraca Entrada", icon: <EventIcon />, path: "/catraca/entrada" },
+  { text: "Catraca Saida", icon: <EventIcon />, path: "/catraca/saida" },
+];
 
 export default function AppLayout() {
   const [user, setUser] = useState(null);
@@ -32,11 +58,8 @@ export default function AppLayout() {
   useEffect(() => {
     async function carregarUsuario() {
       const data = await fetchUserData();
-      if (!data) {
-        navigate({ to: "/login" });
-      } else {
-        setUser(data);
-      }
+      if (!data) navigate({ to: "/login" });
+      else setUser(data);
     }
     carregarUsuario();
   }, [navigate]);
@@ -46,9 +69,7 @@ export default function AppLayout() {
     navigate({ to: "/login" });
   };
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
 
   const drawer = (
     <Box sx={{ width: drawerWidth }}>
@@ -59,101 +80,229 @@ export default function AppLayout() {
       </Toolbar>
       <Divider />
       <List>
-        <ListItem button component={Link} to="/">
+        {/* Dashboard */}
+        <ListItem
+          button
+          component={Link}
+          to="/"
+          sx={{
+            "&:hover": { backgroundColor: theme.palette.action.hover },
+            borderRadius: 1,
+            my: 0.5,
+          }}
+        >
+          <ListItemIcon sx={{ color: theme.palette.primary.main }}>
+            <HomeIcon />
+          </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
-
-        <ListItem button component={Link} to="/clientes">
-          <ListItemText primary="Clientes" />
-        </ListItem>
-
-        <ListItem button component={Link} to="/manutencoes">
-          <ListItemText primary="Manutenções" />
-        </ListItem>
-
-        <ListItem button component={Link} to="/aulas">
-          <ListItemText primary="Aulas" />
-        </ListItem>
-
-        <ListItem button component={Link} to="/modalidades">
-          <ListItemText primary="Modalidades" />
-        </ListItem>
-
-        <ListItem button component={Link} to="/inscricoes">
-          <ListItemText primary="Inscrições" />
-        </ListItem>
-
-        <ListItem button component={Link} to="/equipamentos">
-          <ListItemText primary="Equipamentos" />
-        </ListItem>
-
+        <Divider sx={{ my: 1.5 }} /> {/* separação categoria */}
+        {/* Movimentos e Catraca */}
         {user?.role === "ADMIN" && (
           <>
-            <ListItem button component={Link} to="/cargos">
-              <ListItemText primary="Cargos" />
-            </ListItem>
-
-            <ListItem button component={Link} to="/planos">
-              <ListItemText primary="Planos" />
-            </ListItem>
-
-            <ListItem button component={Link} to="/funcionarios">
-              <ListItemText primary="Funcionários" />
-            </ListItem>
-
-            <ListItem button component={Link} to="/movimentos">
-              <ListItemText primary="Movimentos" />
-            </ListItem>
-
-            <ListItem button component={Link} to="/catraca/entrada">
-              <ListItemText primary="Catraca Entrada" />
-            </ListItem>
-
-            <ListItem button component={Link} to="/catraca/saida">
-              <ListItemText primary="Catraca Saida" />
-            </ListItem>
+            {["Movimentos", "Catraca Entrada", "Catraca Saida"].map(
+              (text, idx) => {
+                const icons = [
+                  <AssignmentIcon />,
+                  <EventIcon />,
+                  <EventIcon />,
+                ];
+                const paths = [
+                  "/movimentos",
+                  "/catraca/entrada",
+                  "/catraca/saida",
+                ];
+                return (
+                  <ListItem
+                    key={text}
+                    button
+                    component={Link}
+                    to={paths[idx]}
+                    sx={{
+                      "&:hover": {
+                        backgroundColor: theme.palette.action.hover,
+                      },
+                      borderRadius: 1,
+                      my: 0.5,
+                    }}
+                  >
+                    <ListItemIcon sx={{ color: theme.palette.secondary.main }}>
+                      {icons[idx]}
+                    </ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItem>
+                );
+              }
+            )}
+            <Divider sx={{ my: 1.5 }} />
           </>
         )}
-
-        <ListItem button component={ButtonBase} onClick={handleLogout}>
-          <LogoutIcon sx={{ mr: 1 }} />
+        {/* Cargos e Funcionários */}
+        {user?.role === "ADMIN" && (
+          <>
+            {["Cargos", "Funcionários"].map((text, idx) => {
+              const icons = [<AssignmentIcon />, <PeopleIcon />];
+              const paths = ["/cargos", "/funcionarios"];
+              return (
+                <ListItem
+                  key={text}
+                  button
+                  component={Link}
+                  to={paths[idx]}
+                  sx={{
+                    "&:hover": { backgroundColor: theme.palette.action.hover },
+                    borderRadius: 1,
+                    my: 0.5,
+                  }}
+                >
+                  <ListItemIcon sx={{ color: theme.palette.secondary.main }}>
+                    {icons[idx]}
+                  </ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItem>
+              );
+            })}
+            <Divider sx={{ my: 1.5 }} />
+          </>
+        )}
+        {/* Planos e Clientes */}
+        {["Planos", "Clientes"].map((text, idx) => {
+          const icons = [<EventIcon />, <PeopleIcon />];
+          const paths = ["/planos", "/clientes"];
+          return (
+            <ListItem
+              key={text}
+              button
+              component={Link}
+              to={paths[idx]}
+              sx={{
+                "&:hover": { backgroundColor: theme.palette.action.hover },
+                borderRadius: 1,
+                my: 0.5,
+              }}
+            >
+              <ListItemIcon sx={{ color: theme.palette.primary.main }}>
+                {icons[idx]}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
+          );
+        })}
+        <Divider sx={{ my: 1.5 }} />
+        {/* Modalidades, Aulas, Inscrições */}
+        {["Modalidades", "Aulas", "Inscrições"].map((text, idx) => {
+          const icons = [<FitnessCenterIcon />, <EventIcon />, <PeopleIcon />];
+          const paths = ["/modalidades", "/aulas", "/inscricoes"];
+          return (
+            <ListItem
+              key={text}
+              button
+              component={Link}
+              to={paths[idx]}
+              sx={{
+                "&:hover": { backgroundColor: theme.palette.action.hover },
+                borderRadius: 1,
+                my: 0.5,
+              }}
+            >
+              <ListItemIcon sx={{ color: theme.palette.primary.main }}>
+                {icons[idx]}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
+          );
+        })}
+        <Divider sx={{ my: 1.5 }} />
+        {/* Equipamentos e Manutenções */}
+        {["Equipamentos", "Manutenções"].map((text, idx) => {
+          const icons = [<FitnessCenterIcon />, <AssignmentIcon />];
+          const paths = ["/equipamentos", "/manutencoes"];
+          return (
+            <ListItem
+              key={text}
+              button
+              component={Link}
+              to={paths[idx]}
+              sx={{
+                "&:hover": { backgroundColor: theme.palette.action.hover },
+                borderRadius: 1,
+                my: 0.5,
+              }}
+            >
+              <ListItemIcon sx={{ color: theme.palette.primary.main }}>
+                {icons[idx]}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
+          );
+        })}
+        <Divider sx={{ my: 1.5 }} />
+        {/* Logout */}
+        <ListItem
+          button
+          component={ButtonBase}
+          onClick={handleLogout}
+          sx={{
+            borderRadius: 1,
+            my: 0.5,
+          }}
+        >
+          <ListItemIcon sx={{ color: theme.palette.error.main }}>
+            <LogoutIcon />
+          </ListItemIcon>
           <ListItemText primary="Sair" />
         </ListItem>
       </List>
     </Box>
   );
 
-  if (!user) return null; // ou um loader
+  if (!user) return null;
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
 
-      {/* AppBar com botão de menu para mobile */}
+      {/* AppBar */}
       <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
         <Toolbar>
-          {isMobile && (
-            <IconButton
-              color="inherit"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2 }}
+          {/* Logo/Home + Nome GymPro */}
+          <Box
+            display="flex"
+            alignItems="center"
+            onClick={() => navigate("/")}
+            sx={{ cursor: "pointer", mr: 2 }}
+          >
+            <Avatar
+              src="/src/assets/dumbbell.png"
+              alt="Logo"
+              sx={{ width: 32, height: 32, mr: 1 }}
+            />
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 700,
+                color: "#d4dcff", // dourado, por exemplo
+              }}
             >
-              <MenuIcon />
-            </IconButton>
-          )}
-          <Typography variant="h6" noWrap component="div">
-            Bem-vindo, {user.nome}
+              GymPro
+            </Typography>
+          </Box>
+
+          {/* Espaço flexível para empurrar o nome do usuário à direita */}
+          <Box sx={{ flexGrow: 1 }} />
+
+          {/* Saudação ao usuário */}
+          <Typography variant="body1" sx={{ mr: 2 }}>
+            Olá, {user.nome}
           </Typography>
         </Toolbar>
       </AppBar>
 
-      {/* Drawer lateral */}
+      {/* Drawer */}
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
       >
-        {/* Drawer para mobile */}
         <Drawer
           variant="temporary"
           open={mobileOpen}
@@ -167,7 +316,6 @@ export default function AppLayout() {
           {drawer}
         </Drawer>
 
-        {/* Drawer permanente para telas maiores */}
         <Drawer
           variant="permanent"
           sx={{
@@ -183,7 +331,7 @@ export default function AppLayout() {
         </Drawer>
       </Box>
 
-      {/* Conteúdo principal */}
+      {/* Main content */}
       <Box
         component="main"
         sx={{

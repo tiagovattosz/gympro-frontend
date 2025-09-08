@@ -14,12 +14,22 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Snackbar,
+  Alert,
+  Collapse,
 } from "@mui/material";
 import {
   CheckCircle,
   Cancel,
   Delete as DeleteIcon,
   Edit as EditIcon,
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+  RemoveCircle as RemoveCircleIcon,
 } from "@mui/icons-material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
@@ -32,26 +42,35 @@ function AulasPage() {
   const [loading, setLoading] = useState(true);
   const [aulaSelecionada, setAulaSelecionada] = useState(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [inscricaoDialogOpen, setInscricaoDialogOpen] = useState(false);
+  const [clientes, setClientes] = useState([]);
+  const [alunosInscritos, setAlunosInscritos] = useState([]);
+  const [alunoSelecionado, setAlunoSelecionado] = useState("");
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [expandedRows, setExpandedRows] = useState({});
+  const [detalhesAulas, setDetalhesAulas] = useState({});
+
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchAulas() {
       try {
         const token = localStorage.getItem("auth_token");
-
         const response = await fetch("/api/aulas", {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         });
-
-        if (!response.ok) {
+        if (!response.ok)
           throw new Error("Erro na requisição: " + response.status);
-        }
 
         const data = await response.json();
-
         const ordemDias = [
           "SEGUNDA",
           "TERCA",
@@ -65,9 +84,7 @@ function AulasPage() {
         const sorted = data.sort((a, b) => {
           const diaA = ordemDias.indexOf(a.diaDaSemana);
           const diaB = ordemDias.indexOf(b.diaDaSemana);
-
           if (diaA !== diaB) return diaA - diaB;
-
           return a.horario.localeCompare(b.horario);
         });
 
@@ -96,18 +113,12 @@ function AulasPage() {
 
     try {
       const token = localStorage.getItem("auth_token");
-
       const response = await fetch(`/api/aulas/${aulaSelecionada.id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      if (!response.ok) {
+      if (!response.ok)
         throw new Error("Erro ao excluir aula: " + response.status);
-      }
-
       setAulas((prev) => prev.filter((a) => a.id !== aulaSelecionada.id));
     } catch (error) {
       console.error("Erro ao excluir aula:", error);
@@ -115,6 +126,175 @@ function AulasPage() {
       setConfirmDialogOpen(false);
       setAulaSelecionada(null);
     }
+  }
+
+  async function abrirDialogInscricao(aula) {
+    setAulaSelecionada(aula);
+    setAlunoSelecionado("");
+    try {
+      const token = localStorage.getItem("auth_token");
+
+      const [clientesRes, aulaRes] = await Promise.all([
+        fetch("/api/clientes", {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch(`/api/aulas/${aula.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+
+      if (!clientesRes.ok || !aulaRes.ok)
+        throw new Error("Erro ao buscar dados");
+
+      const clientesData = await clientesRes.json();
+      const aulaData = await aulaRes.json();
+
+      setClientes(clientesData);
+      setAlunosInscritos(aulaData.alunosInscritos || []);
+      setInscricaoDialogOpen(true);
+    } catch (error) {
+      console.error("Erro ao abrir inscrição:", error);
+      setSnackbar({
+        open: true,
+        message: "Erro ao carregar dados.",
+        severity: "error",
+      });
+    }
+  }
+
+  async function confirmarInscricao() {
+    if (!alunoSelecionado) return;
+    setSubmitting(true);
+
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch("/api/inscricoes-aula", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          aulaId: aulaSelecionada.id,
+          clienteId: alunoSelecionado,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || "Erro ao inscrever aluno.");
+
+      setAulas((prev) =>
+        prev.map((a) =>
+          a.id === aulaSelecionada.id
+            ? { ...a, numeroInscricoes: a.numeroInscricoes + 1 }
+            : a
+        )
+      );
+
+      if (detalhesAulas[aulaSelecionada.id]) {
+        setDetalhesAulas((prev) => ({
+          ...prev,
+          [aulaSelecionada.id]: {
+            ...prev[aulaSelecionada.id],
+            alunosInscritos: [
+              ...prev[aulaSelecionada.id].alunosInscritos,
+              clientes.find((c) => c.id === alunoSelecionado),
+            ],
+          },
+        }));
+      }
+
+      setSnackbar({
+        open: true,
+        message: "Inscrição realizada com sucesso!",
+        severity: "success",
+      });
+      setInscricaoDialogOpen(false);
+    } catch (error) {
+      setSnackbar({ open: true, message: error.message, severity: "error" });
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function toggleExpand(aula) {
+    const isExpanded = expandedRows[aula.id];
+
+    if (!isExpanded && !detalhesAulas[aula.id]) {
+      try {
+        const token = localStorage.getItem("auth_token");
+        const response = await fetch(`/api/aulas/${aula.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!response.ok) throw new Error("Erro ao buscar detalhes da aula");
+
+        const data = await response.json();
+        setDetalhesAulas((prev) => ({ ...prev, [aula.id]: data }));
+      } catch (error) {
+        console.error(error);
+        setSnackbar({
+          open: true,
+          message: "Erro ao carregar inscrições.",
+          severity: "error",
+        });
+      }
+    }
+
+    setExpandedRows((prev) => ({ ...prev, [aula.id]: !isExpanded }));
+  }
+
+  async function removerInscricao(idInscricao, aulaId) {
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch(`/api/inscricoes-aula/${idInscricao}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!response.ok) throw new Error("Erro ao remover inscrição.");
+
+      setDetalhesAulas((prev) => ({
+        ...prev,
+        [aulaId]: {
+          ...prev[aulaId],
+          alunosInscritos: prev[aulaId].alunosInscritos.filter(
+            (aluno) => aluno.idInscricao !== idInscricao
+          ),
+        },
+      }));
+
+      setAulas((prev) =>
+        prev.map((a) =>
+          a.id === aulaId
+            ? { ...a, numeroInscricoes: a.numeroInscricoes - 1 }
+            : a
+        )
+      );
+
+      setSnackbar({
+        open: true,
+        message: "Inscrição removida com sucesso!",
+        severity: "success",
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: error.message,
+        severity: "error",
+      });
+    }
+  }
+
+  function getMotivoInelegibilidade(c) {
+    const hoje = new Date();
+
+    if (!c.plano) return "sem plano";
+    if (!c.dataTerminoAssinatura) return "sem assinatura";
+    if (new Date(c.dataTerminoAssinatura) < hoje) return "assinatura vencida";
+    if (c.numeroInscricoesAtivas >= c.limiteDeInscricoes)
+      return "sem inscrições disponíveis";
+
+    return null;
   }
 
   if (loading) {
@@ -145,6 +325,7 @@ function AulasPage() {
       <Table>
         <TableHead>
           <TableRow>
+            <TableCell />
             <TableCell>Modalidade</TableCell>
             <TableCell>Professor</TableCell>
             <TableCell>Dia da Semana</TableCell>
@@ -156,39 +337,186 @@ function AulasPage() {
         </TableHead>
         <TableBody>
           {aulas.map((aula) => (
-            <TableRow key={aula.id}>
-              <TableCell>{aula.modalidadeNome ?? "-"}</TableCell>
-              <TableCell>{aula.professorNome ?? "-"}</TableCell>
-              <TableCell>{aula.diaDaSemana}</TableCell>
-              <TableCell>{aula.horario}</TableCell>
-              <TableCell>
-                {aula.numeroInscricoes} / {aula.maximoInscricoes}
-              </TableCell>
-              <TableCell>
-                {temVaga(aula) ? (
-                  <CheckCircle color="success" />
-                ) : (
-                  <Cancel color="error" />
-                )}
-              </TableCell>
-              <TableCell>
-                <IconButton
-                  color="primary"
-                  onClick={() => navigate({ to: `/aulas/${aula.id}/editar` })}
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  color="error"
-                  onClick={() => abrirDialogExclusao(aula)}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </TableCell>
-            </TableRow>
+            <>
+              <TableRow key={aula.id}>
+                <TableCell>
+                  <IconButton onClick={() => toggleExpand(aula)}>
+                    {expandedRows[aula.id] ? (
+                      <KeyboardArrowUp />
+                    ) : (
+                      <KeyboardArrowDown />
+                    )}
+                  </IconButton>
+                </TableCell>
+                <TableCell>{aula.modalidadeNome ?? "-"}</TableCell>
+                <TableCell>{aula.professorNome ?? "-"}</TableCell>
+                <TableCell>{aula.diaDaSemana}</TableCell>
+                <TableCell>{aula.horario}</TableCell>
+                <TableCell>
+                  {aula.numeroInscricoes} / {aula.maximoInscricoes}
+                </TableCell>
+                <TableCell>
+                  {temVaga(aula) ? (
+                    <CheckCircle color="success" />
+                  ) : (
+                    <Cancel color="error" />
+                  )}
+                </TableCell>
+                <TableCell>
+                  <IconButton
+                    disabled={!temVaga(aula)}
+                    onClick={() => abrirDialogInscricao(aula)}
+                    title="Inscrever aluno"
+                  >
+                    🎟️
+                  </IconButton>
+                  <IconButton
+                    color="primary"
+                    onClick={() => navigate({ to: `/aulas/${aula.id}/editar` })}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    color="error"
+                    onClick={() => abrirDialogExclusao(aula)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell colSpan={8} sx={{ p: 0 }}>
+                  <Collapse
+                    in={expandedRows[aula.id]}
+                    timeout="auto"
+                    unmountOnExit
+                  >
+                    <Box m={2} marginLeft={17}>
+                      <Typography variant="subtitle1" gutterBottom>
+                        Inscrições
+                      </Typography>
+                      {detalhesAulas[aula.id] ? (
+                        <Table size="small">
+                          <TableBody>
+                            {detalhesAulas[aula.id].alunosInscritos.length >
+                            0 ? (
+                              detalhesAulas[aula.id].alunosInscritos.map(
+                                (aluno) => (
+                                  <TableRow key={aluno.idInscricao}>
+                                    <TableCell sx={{ borderBottom: "none" }}>
+                                      {aluno.nome}
+                                    </TableCell>
+                                    <TableCell sx={{ borderBottom: "none" }}>
+                                      <IconButton
+                                        color="error"
+                                        onClick={() =>
+                                          removerInscricao(
+                                            aluno.idInscricao,
+                                            aula.id
+                                          )
+                                        }
+                                      >
+                                        <RemoveCircleIcon />
+                                      </IconButton>
+                                    </TableCell>
+                                  </TableRow>
+                                )
+                              )
+                            ) : (
+                              <TableRow>
+                                <TableCell
+                                  colSpan={2}
+                                  align="center"
+                                  sx={{ borderBottom: "none" }}
+                                >
+                                  Nenhum aluno inscrito
+                                </TableCell>
+                              </TableRow>
+                            )}
+                          </TableBody>
+                        </Table>
+                      ) : (
+                        <Box display="flex" justifyContent="center" p={2}>
+                          <CircularProgress size={24} />
+                        </Box>
+                      )}
+                    </Box>
+                  </Collapse>
+                </TableCell>
+              </TableRow>
+            </>
           ))}
         </TableBody>
       </Table>
+
+      {/* Dialog Inscrição */}
+      <Dialog
+        open={inscricaoDialogOpen}
+        onClose={() => setInscricaoDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Inscrever Aluno</DialogTitle>
+        <DialogContent dividers>
+          <FormControl fullWidth margin="normal" variant="outlined">
+            <InputLabel id="aluno-select-label">Aluno</InputLabel>
+            <Select
+              labelId="aluno-select-label"
+              value={alunoSelecionado}
+              onChange={(e) => setAlunoSelecionado(e.target.value)}
+              label="Aluno"
+            >
+              {alunosInscritos
+                .sort((a, b) => a.nome.localeCompare(b.nome))
+                .map((aluno) => (
+                  <MenuItem key={aluno.id} value={aluno.id} disabled>
+                    {aluno.nome} (já inscrito)
+                  </MenuItem>
+                ))}
+
+              {clientes
+                .filter((c) => {
+                  const motivo = getMotivoInelegibilidade(c);
+                  return !alunosInscritos.some((a) => a.id === c.id) && !motivo;
+                })
+                .sort((a, b) => a.nome.localeCompare(b.nome))
+                .map((cliente) => (
+                  <MenuItem key={cliente.id} value={cliente.id}>
+                    {cliente.nome}
+                  </MenuItem>
+                ))}
+
+              {clientes
+                .filter((c) => {
+                  const motivo = getMotivoInelegibilidade(c);
+                  return !alunosInscritos.some((a) => a.id === c.id) && motivo;
+                })
+                .sort((a, b) => a.nome.localeCompare(b.nome))
+                .map((cliente) => {
+                  const motivo = getMotivoInelegibilidade(cliente);
+                  return (
+                    <MenuItem key={cliente.id} value={cliente.id} disabled>
+                      {cliente.nome} ({motivo})
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setInscricaoDialogOpen(false)}>
+            Cancelar
+          </Button>
+          <Button
+            onClick={confirmarInscricao}
+            disabled={!alunoSelecionado || submitting}
+            variant="contained"
+          >
+            {submitting ? "Salvando..." : "Confirmar"}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Dialogo de exclusão */}
       <Dialog
@@ -208,6 +536,20 @@ function AulasPage() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Snackbar */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      >
+        <Alert
+          severity={snackbar.severity}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
