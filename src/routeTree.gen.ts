@@ -21,6 +21,7 @@ import { Route as EquipamentosIndexRouteImport } from './routes/equipamentos/ind
 import { Route as ClientesIndexRouteImport } from './routes/clientes/index'
 import { Route as CargosIndexRouteImport } from './routes/cargos/index'
 import { Route as AulasIndexRouteImport } from './routes/aulas/index'
+import { Route as AreaDoClienteIndexRouteImport } from './routes/area-do-cliente/index'
 import { Route as PlanosNovoRouteImport } from './routes/planos/novo'
 import { Route as ModalidadesNovoRouteImport } from './routes/modalidades/novo'
 import { Route as ManutencoesNovoRouteImport } from './routes/manutencoes/novo'
@@ -97,6 +98,11 @@ const CargosIndexRoute = CargosIndexRouteImport.update({
 const AulasIndexRoute = AulasIndexRouteImport.update({
   id: '/aulas/',
   path: '/aulas/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AreaDoClienteIndexRoute = AreaDoClienteIndexRouteImport.update({
+  id: '/area-do-cliente/',
+  path: '/area-do-cliente/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlanosNovoRoute = PlanosNovoRouteImport.update({
@@ -198,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/manutencoes/novo': typeof ManutencoesNovoRoute
   '/modalidades/novo': typeof ModalidadesNovoRoute
   '/planos/novo': typeof PlanosNovoRoute
+  '/area-do-cliente': typeof AreaDoClienteIndexRoute
   '/aulas': typeof AulasIndexRoute
   '/cargos': typeof CargosIndexRoute
   '/clientes': typeof ClientesIndexRoute
@@ -229,6 +236,7 @@ export interface FileRoutesByTo {
   '/manutencoes/novo': typeof ManutencoesNovoRoute
   '/modalidades/novo': typeof ModalidadesNovoRoute
   '/planos/novo': typeof PlanosNovoRoute
+  '/area-do-cliente': typeof AreaDoClienteIndexRoute
   '/aulas': typeof AulasIndexRoute
   '/cargos': typeof CargosIndexRoute
   '/clientes': typeof ClientesIndexRoute
@@ -261,6 +269,7 @@ export interface FileRoutesById {
   '/manutencoes/novo': typeof ManutencoesNovoRoute
   '/modalidades/novo': typeof ModalidadesNovoRoute
   '/planos/novo': typeof PlanosNovoRoute
+  '/area-do-cliente/': typeof AreaDoClienteIndexRoute
   '/aulas/': typeof AulasIndexRoute
   '/cargos/': typeof CargosIndexRoute
   '/clientes/': typeof ClientesIndexRoute
@@ -294,6 +303,7 @@ export interface FileRouteTypes {
     | '/manutencoes/novo'
     | '/modalidades/novo'
     | '/planos/novo'
+    | '/area-do-cliente'
     | '/aulas'
     | '/cargos'
     | '/clientes'
@@ -325,6 +335,7 @@ export interface FileRouteTypes {
     | '/manutencoes/novo'
     | '/modalidades/novo'
     | '/planos/novo'
+    | '/area-do-cliente'
     | '/aulas'
     | '/cargos'
     | '/clientes'
@@ -356,6 +367,7 @@ export interface FileRouteTypes {
     | '/manutencoes/novo'
     | '/modalidades/novo'
     | '/planos/novo'
+    | '/area-do-cliente/'
     | '/aulas/'
     | '/cargos/'
     | '/clientes/'
@@ -388,6 +400,7 @@ export interface RootRouteChildren {
   ManutencoesNovoRoute: typeof ManutencoesNovoRoute
   ModalidadesNovoRoute: typeof ModalidadesNovoRoute
   PlanosNovoRoute: typeof PlanosNovoRoute
+  AreaDoClienteIndexRoute: typeof AreaDoClienteIndexRoute
   AulasIndexRoute: typeof AulasIndexRoute
   CargosIndexRoute: typeof CargosIndexRoute
   ClientesIndexRoute: typeof ClientesIndexRoute
@@ -491,6 +504,13 @@ declare module '@tanstack/react-router' {
       path: '/aulas'
       fullPath: '/aulas'
       preLoaderRoute: typeof AulasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/area-do-cliente/': {
+      id: '/area-do-cliente/'
+      path: '/area-do-cliente'
+      fullPath: '/area-do-cliente'
+      preLoaderRoute: typeof AreaDoClienteIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/planos/novo': {
@@ -628,6 +648,7 @@ const rootRouteChildren: RootRouteChildren = {
   ManutencoesNovoRoute: ManutencoesNovoRoute,
   ModalidadesNovoRoute: ModalidadesNovoRoute,
   PlanosNovoRoute: PlanosNovoRoute,
+  AreaDoClienteIndexRoute: AreaDoClienteIndexRoute,
   AulasIndexRoute: AulasIndexRoute,
   CargosIndexRoute: CargosIndexRoute,
   ClientesIndexRoute: ClientesIndexRoute,

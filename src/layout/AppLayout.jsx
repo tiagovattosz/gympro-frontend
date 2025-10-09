@@ -14,7 +14,6 @@ import {
   ListItemIcon,
   Divider,
   CssBaseline,
-  useMediaQuery,
   ButtonBase,
   Avatar,
 } from "@mui/material";
@@ -53,7 +52,6 @@ export default function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     async function carregarUsuario() {
