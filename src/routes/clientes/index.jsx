@@ -48,6 +48,8 @@ function ClientesPage() {
   const [termoPesquisa, setTermoPesquisa] = useState("");
   const [erroData, setErroData] = useState("");
 
+  const [filtroAssinatura, setFiltroAssinatura] = useState("todos");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -99,7 +101,7 @@ function ClientesPage() {
     const valor = e.target.value;
     setDataInicio(valor);
 
-    const hoje = new Date().toISOString().split("T")[0];
+    const hoje = new Date().toLocaleDateString("en-CA");
     if (valor > hoje) {
       setErroData("A data de início não pode ser posterior ao dia de hoje.");
     } else {
@@ -126,18 +128,31 @@ function ClientesPage() {
       const matricula = normalizarTexto(cliente.matricula);
       const cpf = normalizarTexto(cliente.cpf);
 
+      // filtro principal (nome, matrícula, cpf)
+      let passaFiltroPrincipal = true;
       if (filtro === "nome") {
-        return nome.includes(termoNormalizado);
+        passaFiltroPrincipal = nome.includes(termoNormalizado);
       } else if (filtro === "matricula") {
-        return matricula.includes(termoNormalizado);
+        passaFiltroPrincipal = matricula.includes(termoNormalizado);
       } else if (filtro === "cpf") {
-        return cpf.includes(termoNormalizado);
+        passaFiltroPrincipal = cpf.includes(termoNormalizado);
       }
-      return true;
+
+      // filtro de assinatura
+      const ativa = isAssinaturaAtiva(cliente.dataTerminoAssinatura);
+      let passaFiltroAssinatura = true;
+
+      if (filtroAssinatura === "ativa") {
+        passaFiltroAssinatura = ativa;
+      } else if (filtroAssinatura === "vencida") {
+        passaFiltroAssinatura = !ativa;
+      }
+
+      return passaFiltroPrincipal && passaFiltroAssinatura;
     });
 
     setClientesFiltrados(filtrados);
-  }, [termoPesquisa, filtro, clientes]);
+  }, [termoPesquisa, filtro, clientes, filtroAssinatura]);
 
   async function excluirCliente() {
     if (!clienteSelecionado) return;
@@ -192,7 +207,7 @@ function ClientesPage() {
   }
 
   function abrirDialogPlano(cliente) {
-    const hoje = new Date().toLocaleDateString("en-CA"); // formato yyyy-MM-dd respeitando o fuso local
+    const hoje = new Date().toLocaleDateString("en-CA");
     setClienteSelecionado(cliente);
     setPlanoId("");
     setDataInicio(hoje);
@@ -269,6 +284,18 @@ function ClientesPage() {
         <Typography variant="h5">Lista de Clientes</Typography>
 
         <Box display="flex" alignItems="center" gap={2}>
+          <TextField
+            select
+            size="small"
+            value={filtroAssinatura}
+            onChange={(e) => setFiltroAssinatura(e.target.value)}
+            label="Assinatura"
+          >
+            <MenuItem value="todos">Todos</MenuItem>
+            <MenuItem value="ativa">Ativa</MenuItem>
+            <MenuItem value="vencida">Vencida</MenuItem>
+          </TextField>
+
           {/* Tipo de filtro */}
           <TextField
             select

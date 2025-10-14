@@ -21,6 +21,8 @@ import {
   Snackbar,
   Alert,
   Collapse,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import {
   CheckCircle,
@@ -39,6 +41,7 @@ export const Route = createFileRoute("/aulas/")({
 
 function AulasPage() {
   const [aulas, setAulas] = useState([]);
+  const [aulasFiltradas, setAulasFiltradas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [aulaSelecionada, setAulaSelecionada] = useState(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
@@ -54,6 +57,7 @@ function AulasPage() {
   const [submitting, setSubmitting] = useState(false);
   const [expandedRows, setExpandedRows] = useState({});
   const [detalhesAulas, setDetalhesAulas] = useState({});
+  const [filtrarComVagas, setFiltrarComVagas] = useState(false);
 
   const navigate = useNavigate();
 
@@ -89,6 +93,7 @@ function AulasPage() {
         });
 
         setAulas(sorted);
+        setAulasFiltradas(sorted);
       } catch (error) {
         console.error("Erro ao buscar aulas:", error);
       } finally {
@@ -102,6 +107,15 @@ function AulasPage() {
   function temVaga(aula) {
     return aula.numeroInscricoes < aula.maximoInscricoes;
   }
+
+  // Filtro "Com vagas"
+  useEffect(() => {
+    if (filtrarComVagas) {
+      setAulasFiltradas(aulas.filter((a) => temVaga(a)));
+    } else {
+      setAulasFiltradas(aulas);
+    }
+  }, [filtrarComVagas, aulas]);
 
   function abrirDialogExclusao(aula) {
     setAulaSelecionada(aula);
@@ -307,21 +321,37 @@ function AulasPage() {
 
   return (
     <Box p={2}>
+      {/* Cabeçalho com filtro e botão */}
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         mb={2}
+        flexWrap="wrap"
+        gap={2}
       >
         <Typography variant="h5">Lista de Aulas</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate({ to: "/aulas/novo" })}
-        >
-          Nova Aula
-        </Button>
+        <Box display="flex" alignItems="center" gap={2}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={filtrarComVagas}
+                onChange={(e) => setFiltrarComVagas(e.target.checked)}
+              />
+            }
+            label="Com vagas"
+          />
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate({ to: "/aulas/novo" })}
+          >
+            Nova Aula
+          </Button>
+        </Box>
       </Box>
+
       <Table>
         <TableHead>
           <TableRow>
@@ -336,7 +366,7 @@ function AulasPage() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {aulas.map((aula) => (
+          {aulasFiltradas.map((aula) => (
             <>
               <TableRow key={aula.id}>
                 <TableCell>
@@ -405,7 +435,13 @@ function AulasPage() {
                                 (aluno) => (
                                   <TableRow key={aluno.idInscricao}>
                                     <TableCell sx={{ borderBottom: "none" }}>
-                                      {aluno.nome}
+                                      {aluno.nome} - Inscrita em{" "}
+                                      {aluno.dataDaInscricao
+                                        ? aluno.dataDaInscricao
+                                            .split("-")
+                                            .reverse()
+                                            .join("/")
+                                        : "-"}
                                     </TableCell>
                                     <TableCell sx={{ borderBottom: "none" }}>
                                       <IconButton

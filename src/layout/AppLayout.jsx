@@ -187,10 +187,10 @@ export default function AppLayout() {
           );
         })}
         <Divider sx={{ my: 1.5 }} />
-        {/* Modalidades, Aulas, Inscrições */}
-        {["Modalidades", "Aulas", "Inscrições"].map((text, idx) => {
+        {/* Modalidades, Aulas*/}
+        {["Modalidades", "Aulas"].map((text, idx) => {
           const icons = [<FitnessCenterIcon />, <EventIcon />, <PeopleIcon />];
-          const paths = ["/modalidades", "/aulas", "/inscricoes"];
+          const paths = ["/modalidades", "/aulas"];
           return (
             <ListItem
               key={text}

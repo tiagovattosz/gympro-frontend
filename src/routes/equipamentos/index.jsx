@@ -17,6 +17,8 @@ import {
   DialogTitle,
   Snackbar,
   Alert,
+  TextField,
+  MenuItem,
 } from "@mui/material";
 import { CheckCircle, Cancel, Delete, Edit } from "@mui/icons-material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -27,6 +29,8 @@ export const Route = createFileRoute("/equipamentos/")({
 
 function EquipamentosPage() {
   const [equipamentos, setEquipamentos] = useState([]);
+  const [equipamentosFiltrados, setEquipamentosFiltrados] = useState([]);
+  const [filtroStatus, setFiltroStatus] = useState("todos");
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null); // equipamento selecionado para excluir
   const [error, setError] = useState("");
@@ -57,12 +61,26 @@ function EquipamentosPage() {
       const sorted = data.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
 
       setEquipamentos(sorted);
+      setEquipamentosFiltrados(sorted);
     } catch (error) {
       console.error("Erro ao buscar equipamentos:", error);
     } finally {
       setLoading(false);
     }
   }
+
+  // Atualiza lista conforme o filtro selecionado
+  useEffect(() => {
+    const filtrados = equipamentos.filter((eq) => {
+      if (filtroStatus === "operando") {
+        return !eq.emManutencao;
+      } else if (filtroStatus === "manutencao") {
+        return eq.emManutencao;
+      }
+      return true; // todos
+    });
+    setEquipamentosFiltrados(filtrados);
+  }, [filtroStatus, equipamentos]);
 
   async function handleDelete() {
     if (!selected) return;
@@ -100,22 +118,41 @@ function EquipamentosPage() {
 
   return (
     <Box p={2}>
+      {/* Cabeçalho com filtro e botão */}
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         mb={2}
+        flexWrap="wrap"
+        gap={2}
       >
         <Typography variant="h5">Lista de Equipamentos</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate({ to: "/equipamentos/novo" })}
-        >
-          Novo Equipamento
-        </Button>
+
+        <Box display="flex" alignItems="center" gap={2}>
+          <TextField
+            select
+            size="small"
+            label="Status"
+            value={filtroStatus}
+            onChange={(e) => setFiltroStatus(e.target.value)}
+          >
+            <MenuItem value="todos">Todos</MenuItem>
+            <MenuItem value="operando">Operando</MenuItem>
+            <MenuItem value="manutencao">Em manutenção</MenuItem>
+          </TextField>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate({ to: "/equipamentos/novo" })}
+          >
+            Novo Equipamento
+          </Button>
+        </Box>
       </Box>
 
+      {/* Tabela */}
       <Table>
         <TableHead>
           <TableRow>
@@ -126,7 +163,7 @@ function EquipamentosPage() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {equipamentos.map((eq) => (
+          {equipamentosFiltrados.map((eq) => (
             <TableRow key={eq.id}>
               <TableCell>{eq.nome}</TableCell>
               <TableCell>{eq.descricao}</TableCell>
