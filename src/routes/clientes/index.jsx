@@ -46,6 +46,7 @@ function ClientesPage() {
 
   const [filtro, setFiltro] = useState("nome");
   const [termoPesquisa, setTermoPesquisa] = useState("");
+  const [erroData, setErroData] = useState("");
 
   const navigate = useNavigate();
 
@@ -91,6 +92,18 @@ function ClientesPage() {
       }
     } catch (error) {
       console.error("Erro ao buscar planos:", error);
+    }
+  }
+
+  function handleDataChange(e) {
+    const valor = e.target.value;
+    setDataInicio(valor);
+
+    const hoje = new Date().toISOString().split("T")[0];
+    if (valor > hoje) {
+      setErroData("A data de início não pode ser posterior ao dia de hoje.");
+    } else {
+      setErroData("");
     }
   }
 
@@ -179,8 +192,35 @@ function ClientesPage() {
   }
 
   function abrirDialogPlano(cliente) {
+    const hoje = new Date().toLocaleDateString("en-CA"); // formato yyyy-MM-dd respeitando o fuso local
     setClienteSelecionado(cliente);
+    setPlanoId("");
+    setDataInicio(hoje);
     setPlanoDialogOpen(true);
+  }
+
+  async function removerPlano() {
+    if (!clienteSelecionado) return;
+
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch("/api/assinaturas/remover-plano", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ clienteId: clienteSelecionado.id }),
+      });
+
+      if (!response.ok) throw new Error("Erro ao remover plano");
+
+      setPlanoDialogOpen(false);
+      await fetchClientes(); // Atualiza a lista
+    } catch (error) {
+      console.error("Erro ao remover plano:", error);
+      alert("Não foi possível remover o plano.");
+    }
   }
 
   function abrirDialogExclusao(cliente) {
@@ -362,11 +402,19 @@ function ClientesPage() {
             margin="normal"
             InputLabelProps={{ shrink: true }}
             value={dataInicio}
-            onChange={(e) => setDataInicio(e.target.value)}
+            onChange={handleDataChange}
+            error={!!erroData}
+            helperText={erroData}
+            inputProps={{
+              max: new Date().toLocaleDateString("en-CA"),
+            }}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setPlanoDialogOpen(false)}>Cancelar</Button>
+          <Button variant="contained" color="error" onClick={removerPlano}>
+            Remover plano
+          </Button>
           <Button variant="contained" onClick={definirPlano}>
             Salvar
           </Button>
