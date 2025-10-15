@@ -123,7 +123,7 @@ function ManutencoesPage() {
           </>
         );
       default:
-        return null; // Realizadas e canceladas/rejeitadas não têm ações
+        return null; // realizadas e canceladas/rejeitadas não têm ações
     }
   };
 
@@ -181,7 +181,7 @@ function ManutencoesPage() {
         </TableBody>
       </Table>
 
-      {/* Snackbar de sucesso */}
+      {/* snackbar de sucesso */}
       <Snackbar
         open={!!success}
         autoHideDuration={3000}
@@ -192,7 +192,7 @@ function ManutencoesPage() {
         </Alert>
       </Snackbar>
 
-      {/* Snackbar de erro */}
+      {/* snackbar de erro */}
       <Snackbar
         open={!!error}
         autoHideDuration={4000}

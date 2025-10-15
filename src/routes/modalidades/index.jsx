@@ -138,7 +138,7 @@ function ModalidadesPage() {
             <TableRow key={modalidade.id}>
               <TableCell>{modalidade.descricao}</TableCell>
               <TableCell>
-                {/* Botão de Editar */}
+                {/* editar */}
                 <IconButton
                   color="primary"
                   onClick={() =>
@@ -148,7 +148,7 @@ function ModalidadesPage() {
                   <Edit />
                 </IconButton>
 
-                {/* Botão de Deletar */}
+                {/* deletar */}
                 <IconButton
                   color="error"
                   onClick={() => handleDeleteClick(modalidade)}
@@ -161,7 +161,7 @@ function ModalidadesPage() {
         </TableBody>
       </Table>
 
-      {/* Dialog de confirmação */}
+      {/* dialog de exclusao */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Confirmar Exclusão</DialogTitle>
         <DialogContent>

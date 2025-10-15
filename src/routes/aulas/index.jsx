@@ -34,6 +34,7 @@ import {
   RemoveCircle as RemoveCircleIcon,
 } from "@mui/icons-material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { formatDate } from "../../utils/formatDate";
 
 export const Route = createFileRoute("/aulas/")({
   component: AulasPage,
@@ -108,7 +109,7 @@ function AulasPage() {
     return aula.numeroInscricoes < aula.maximoInscricoes;
   }
 
-  // Filtro "Com vagas"
+  // filtro vagas
   useEffect(() => {
     if (filtrarComVagas) {
       setAulasFiltradas(aulas.filter((a) => temVaga(a)));
@@ -321,7 +322,7 @@ function AulasPage() {
 
   return (
     <Box p={2}>
-      {/* Cabeçalho com filtro e botão */}
+      {/* filtros */}
       <Box
         display="flex"
         justifyContent="space-between"
@@ -415,6 +416,7 @@ function AulasPage() {
                 </TableCell>
               </TableRow>
 
+              {/* lista de inscricoes */}
               <TableRow>
                 <TableCell colSpan={8} sx={{ p: 0 }}>
                   <Collapse
@@ -435,12 +437,9 @@ function AulasPage() {
                                 (aluno) => (
                                   <TableRow key={aluno.idInscricao}>
                                     <TableCell sx={{ borderBottom: "none" }}>
-                                      {aluno.nome} - Inscrita em{" "}
+                                      {aluno.nome} - Inscrito em{" "}
                                       {aluno.dataDaInscricao
-                                        ? aluno.dataDaInscricao
-                                            .split("-")
-                                            .reverse()
-                                            .join("/")
+                                        ? formatDate(aluno.dataDaInscricao)
                                         : "-"}
                                     </TableCell>
                                     <TableCell sx={{ borderBottom: "none" }}>
@@ -486,7 +485,7 @@ function AulasPage() {
         </TableBody>
       </Table>
 
-      {/* Dialog Inscrição */}
+      {/* dialog inscricao */}
       <Dialog
         open={inscricaoDialogOpen}
         onClose={() => setInscricaoDialogOpen(false)}
@@ -512,28 +511,22 @@ function AulasPage() {
                 ))}
 
               {clientes
-                .filter((c) => {
-                  const motivo = getMotivoInelegibilidade(c);
-                  return !alunosInscritos.some((a) => a.id === c.id) && !motivo;
-                })
-                .sort((a, b) => a.nome.localeCompare(b.nome))
-                .map((cliente) => (
-                  <MenuItem key={cliente.id} value={cliente.id}>
-                    {cliente.nome}
-                  </MenuItem>
-                ))}
-
-              {clientes
-                .filter((c) => {
-                  const motivo = getMotivoInelegibilidade(c);
-                  return !alunosInscritos.some((a) => a.id === c.id) && motivo;
-                })
+                // nao inscritos
+                .filter((c) => !alunosInscritos.some((a) => a.id === c.id))
+                // ordernacao nome
                 .sort((a, b) => a.nome.localeCompare(b.nome))
                 .map((cliente) => {
                   const motivo = getMotivoInelegibilidade(cliente);
+                  const isDisabled = Boolean(motivo);
+
                   return (
-                    <MenuItem key={cliente.id} value={cliente.id} disabled>
-                      {cliente.nome} ({motivo})
+                    <MenuItem
+                      key={cliente.id}
+                      value={cliente.id}
+                      disabled={isDisabled}
+                    >
+                      {cliente.nome}
+                      {isDisabled && ` (${motivo})`}
                     </MenuItem>
                   );
                 })}
@@ -554,7 +547,7 @@ function AulasPage() {
         </DialogActions>
       </Dialog>
 
-      {/* Dialogo de exclusão */}
+      {/* dialog exclusao */}
       <Dialog
         open={confirmDialogOpen}
         onClose={() => setConfirmDialogOpen(false)}
@@ -573,7 +566,7 @@ function AulasPage() {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar */}
+      {/* snackbar confirmacao e erro */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}

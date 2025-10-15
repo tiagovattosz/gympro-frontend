@@ -19,7 +19,7 @@ export const Route = createFileRoute("/modalidades/$id/editar")({
 
 function EditarModalidadePage() {
   const navigate = useNavigate();
-  const { id } = useParams({ strict: false }); // Pega o ID da URL
+  const { id } = useParams({ strict: false });
 
   const [form, setForm] = useState({
     descricao: "",
@@ -30,7 +30,6 @@ function EditarModalidadePage() {
   const [globalError, setGlobalError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // Buscar dados da modalidade
   useEffect(() => {
     async function fetchModalidade() {
       try {

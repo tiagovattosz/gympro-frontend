@@ -113,7 +113,7 @@ function NovoClientePage() {
         navigate({ to: "/clientes" });
       }
     } catch (err) {
-      setGlobalError("Erro inesperado ou de rede.");
+      setGlobalError("Erro inesperado ou de rede: " + err);
     } finally {
       setSubmitting(false);
     }

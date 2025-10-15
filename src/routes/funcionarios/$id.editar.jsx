@@ -15,7 +15,6 @@ import {
   useNavigate,
   useParams,
 } from "@tanstack/react-router";
-import { isValid as isValidCPF } from "@fnando/cpf";
 import { differenceInYears } from "date-fns";
 
 export const Route = createFileRoute("/funcionarios/$id/editar")({

@@ -87,8 +87,6 @@ function MovimentosPage() {
     setFilteredMovimentos(movimentos);
   }
 
-  // --- Correções de parse de data/hora ---
-
   // Recebe "YYYY-MM-DD" e retorna Date local (evita shift UTC)
   function parseDateStringToLocal(dateStr) {
     if (!dateStr) return null;
@@ -138,7 +136,7 @@ function MovimentosPage() {
         Registros de Entrada e Saída
       </Typography>
 
-      {/* Filtros */}
+      {/* filtros */}
       <Box
         display="flex"
         flexWrap="wrap"

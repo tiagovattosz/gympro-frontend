@@ -28,25 +28,6 @@ import { useTheme } from "@mui/material/styles";
 
 const drawerWidth = 240;
 
-const menuItems = [
-  { text: "Dashboard", icon: <HomeIcon />, path: "/" },
-  { text: "Clientes", icon: <PeopleIcon />, path: "/clientes" },
-  { text: "Manutenções", icon: <AssignmentIcon />, path: "/manutencoes" },
-  { text: "Aulas", icon: <EventIcon />, path: "/aulas" },
-  { text: "Modalidades", icon: <FitnessCenterIcon />, path: "/modalidades" },
-  { text: "Inscrições", icon: <PeopleIcon />, path: "/inscricoes" },
-  { text: "Equipamentos", icon: <FitnessCenterIcon />, path: "/equipamentos" },
-];
-
-const adminItems = [
-  { text: "Cargos", icon: <AssignmentIcon />, path: "/cargos" },
-  { text: "Planos", icon: <EventIcon />, path: "/planos" },
-  { text: "Funcionários", icon: <PeopleIcon />, path: "/funcionarios" },
-  { text: "Movimentos", icon: <AssignmentIcon />, path: "/movimentos" },
-  { text: "Catraca Entrada", icon: <EventIcon />, path: "/catraca/entrada" },
-  { text: "Catraca Saida", icon: <EventIcon />, path: "/catraca/saida" },
-];
-
 export default function AppLayout() {
   const [user, setUser] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -78,7 +59,7 @@ export default function AppLayout() {
       </Toolbar>
       <Divider />
       <List>
-        {/* Dashboard */}
+        {/* dashboard */}
         <ListItem
           button
           component={Link}
@@ -94,7 +75,7 @@ export default function AppLayout() {
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
-        <Divider sx={{ my: 1.5 }} /> {/* separação categoria */}
+        <Divider sx={{ my: 1.5 }} /> {/* separar categoria */}
         {/* Movimentos e Catraca */}
         {user?.role === "ADMIN" && (
           <>
@@ -221,6 +202,31 @@ export default function AppLayout() {
               button
               component={Link}
               to={paths[idx]}
+              sx={{
+                "&:hover": { backgroundColor: theme.palette.action.hover },
+                borderRadius: 1,
+                my: 0.5,
+              }}
+            >
+              <ListItemIcon sx={{ color: theme.palette.primary.main }}>
+                {icons[idx]}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
+          );
+        })}
+        <Divider sx={{ my: 1.5 }} />
+        {/* Área do Cliente */}
+        {["Área do cliente"].map((text, idx) => {
+          const icons = [<PeopleIcon />];
+          const paths = ["/area-do-cliente"];
+          return (
+            <ListItem
+              key={text}
+              button
+              component={Link}
+              to={paths[idx]}
+              target="blank"
               sx={{
                 "&:hover": { backgroundColor: theme.palette.action.hover },
                 borderRadius: 1,

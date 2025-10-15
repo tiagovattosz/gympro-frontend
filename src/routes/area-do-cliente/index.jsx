@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import { formatDate } from "../../utils/formatDate";
 
 export const Route = createFileRoute("/area-do-cliente/")({
   component: AreaDoCliente,
@@ -58,15 +59,6 @@ function AreaDoCliente() {
     }
   };
 
-  const formatarData = (data) => {
-    if (!data) return "—";
-    try {
-      return new Date(data).toLocaleDateString();
-    } catch {
-      return "—";
-    }
-  };
-
   const calcularStatus = (inicio, termino) => {
     if (!inicio || !termino) return "Sem plano ativo";
     return new Date(termino) > new Date() ? "Ativo" : "Inativo";
@@ -74,7 +66,7 @@ function AreaDoCliente() {
 
   return (
     <Container maxWidth="md" sx={{ mt: 10 }}>
-      {/* Cabeçalho */}
+      {/* cabecalho */}
       <Box
         display="flex"
         flexDirection="column"
@@ -98,7 +90,7 @@ function AreaDoCliente() {
         </Typography>
       </Box>
 
-      {/* Campo matrícula */}
+      {/* input matricula */}
       <Box display="flex" gap={2} justifyContent="center" mb={4}>
         <TextField
           label="Matrícula"
@@ -118,24 +110,21 @@ function AreaDoCliente() {
         </Button>
       </Box>
 
-      {/* Loading */}
       {loading && (
         <Box textAlign="center" mt={4}>
           <CircularProgress />
         </Box>
       )}
 
-      {/* Erro */}
       {error && (
         <Typography color="error" align="center" mt={2}>
           {error}
         </Typography>
       )}
 
-      {/* Resultado */}
       {dados && (
         <Box>
-          {/* Card principal */}
+          {/* card principal */}
           <Card sx={{ mb: 3, boxShadow: 3, borderRadius: 3 }}>
             <CardContent>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
@@ -160,7 +149,7 @@ function AreaDoCliente() {
               <Typography>
                 <strong>Período:</strong>{" "}
                 {dados.dataInicioAssinatura || dados.dataTerminoAssinatura
-                  ? `${formatarData(dados.dataInicioAssinatura)} até ${formatarData(
+                  ? `${formatDate(dados.dataInicioAssinatura)} até ${formatDate(
                       dados.dataTerminoAssinatura
                     )}`
                   : "—"}
@@ -173,7 +162,7 @@ function AreaDoCliente() {
             </CardContent>
           </Card>
 
-          {/* Inscrições */}
+          {/* inscricoes */}
           <Card sx={{ boxShadow: 3, borderRadius: 3 }}>
             <CardContent>
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
@@ -197,7 +186,7 @@ function AreaDoCliente() {
                               Professor: {i.professorNome || "—"}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                              Data da inscrição: {formatarData(i.dataInscricao)}
+                              Data da inscrição: {formatDate(i.dataInscricao)}
                             </Typography>
                           </>
                         }

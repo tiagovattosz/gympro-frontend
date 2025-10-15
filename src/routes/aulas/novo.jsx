@@ -73,7 +73,6 @@ function NovaAulaPage() {
 
   function validate() {
     const newErrors = {};
-    // Agora só valida campos obrigatórios:
     if (!form.diaDaSemana) newErrors.diaDaSemana = "Selecione o dia da semana.";
     if (!form.horario) newErrors.horario = "Horário é obrigatório.";
     if (
@@ -125,7 +124,7 @@ function NovaAulaPage() {
         navigate({ to: "/aulas" });
       }
     } catch (err) {
-      setGlobalError("Erro de rede ou inesperado.");
+      setGlobalError("Erro de rede ou inesperado: " + err);
     } finally {
       setSubmitting(false);
     }
@@ -154,7 +153,6 @@ function NovaAulaPage() {
       )}
 
       <form onSubmit={handleSubmit} noValidate>
-        {/* Modalidade (agora opcional) */}
         <FormControl fullWidth margin="normal" error={!!errors.modalidadeId}>
           <InputLabel>Modalidade</InputLabel>
           <Select
@@ -174,7 +172,6 @@ function NovaAulaPage() {
           </Select>
         </FormControl>
 
-        {/* Professor (agora opcional) */}
         <FormControl fullWidth margin="normal" error={!!errors.professorId}>
           <InputLabel>Professor</InputLabel>
           <Select
@@ -194,7 +191,6 @@ function NovaAulaPage() {
           </Select>
         </FormControl>
 
-        {/* Dia da Semana */}
         <FormControl
           fullWidth
           margin="normal"
@@ -216,7 +212,6 @@ function NovaAulaPage() {
           </Select>
         </FormControl>
 
-        {/* Horário */}
         <TextField
           label="Horário"
           name="horario"
@@ -232,7 +227,6 @@ function NovaAulaPage() {
           helperText={errors.horario}
         />
 
-        {/* Máximo de Inscrições */}
         <TextField
           label="Máximo de Inscrições"
           name="maximoInscricoes"

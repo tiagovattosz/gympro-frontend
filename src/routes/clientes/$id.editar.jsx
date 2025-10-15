@@ -1,4 +1,3 @@
-// src/routes/clientes/[id]/editar.tsx
 import { useEffect, useState } from "react";
 import {
   Box,
@@ -58,7 +57,7 @@ function EditarClientePage() {
           matricula: data.matricula,
         });
       } catch (err) {
-        setGlobalError("Erro ao carregar dados do cliente.");
+        setGlobalError("Erro ao carregar dados do cliente: " + err);
       } finally {
         setLoading(false);
       }
@@ -149,7 +148,7 @@ function EditarClientePage() {
         navigate({ to: "/clientes" });
       }
     } catch (err) {
-      setGlobalError("Erro inesperado ou de rede.");
+      setGlobalError("Erro inesperado ou de rede: " + err);
     } finally {
       setSubmitting(false);
     }

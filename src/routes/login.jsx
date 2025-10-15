@@ -56,13 +56,12 @@ function Login() {
           textAlign: "center",
         }}
       >
-        {/* Logo */}
         <Avatar
           src="/src/assets/dumbbell.png"
           alt="GymPro Logo"
           sx={{ width: 64, height: 64, mx: "auto", mb: 2 }}
         />
-        {/* Nome da Plataforma */}
+
         <Typography
           variant="h4"
           sx={{
@@ -81,7 +80,6 @@ function Login() {
 
         <Divider sx={{ mb: 3 }} />
 
-        {/* Formulário de Login */}
         <form onSubmit={handleSubmit}>
           <TextField
             label="Usuário"
@@ -121,11 +119,6 @@ function Login() {
             Entrar
           </Button>
         </form>
-
-        {/* Texto adicional */}
-        <Typography variant="body2" color="textSecondary" sx={{ mt: 3 }}>
-          © 2025 GymPro. Todos os direitos reservados.
-        </Typography>
       </Paper>
     </Box>
   );

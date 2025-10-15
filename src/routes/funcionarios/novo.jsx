@@ -243,7 +243,6 @@ function NovoFuncionarioPage() {
           ))}
         </TextField>
 
-        {/* Campo Administrador */}
         <Box mt={2}>
           <FormControlLabel
             control={

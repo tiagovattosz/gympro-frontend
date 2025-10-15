@@ -15,7 +15,7 @@ export const Route = createFileRoute("/catraca/saida")({
 export default function CatracaSaida() {
   const [matricula, setMatricula] = useState("");
   const [loading, setLoading] = useState(false);
-  const [resultado, setResultado] = useState(null); // null | sucesso | erro
+  const [resultado, setResultado] = useState(null);
   const [mensagem, setMensagem] = useState("");
 
   async function handleSubmit(e) {
@@ -49,7 +49,6 @@ export default function CatracaSaida() {
         setMensagem(data.message || "Erro desconhecido");
       }
 
-      // Limpa matricula e volta para input após 3 segundos
       setTimeout(() => {
         setMatricula("");
         setResultado(null);
@@ -69,7 +68,6 @@ export default function CatracaSaida() {
     }
   }
 
-  // Tela de resultado
   if (resultado) {
     return (
       <Box
@@ -95,7 +93,6 @@ export default function CatracaSaida() {
     );
   }
 
-  // Tela de input
   return (
     <>
       <Box

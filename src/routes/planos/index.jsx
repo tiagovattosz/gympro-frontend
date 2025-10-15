@@ -144,7 +144,7 @@ function PlanosPage() {
               <TableCell>{plano.duracaoEmMeses}</TableCell>
               <TableCell>{plano.detalhes || "-"}</TableCell>
               <TableCell>
-                {/* Botão de edição */}
+                {/* editar */}
                 <IconButton
                   color="primary"
                   onClick={() => navigate({ to: `/planos/${plano.id}/editar` })}
@@ -152,7 +152,7 @@ function PlanosPage() {
                   <EditIcon />
                 </IconButton>
 
-                {/* Botão de exclusão */}
+                {/* deletar */}
                 <IconButton
                   color="error"
                   onClick={() => abrirDialogExclusao(plano)}
@@ -165,7 +165,7 @@ function PlanosPage() {
         </TableBody>
       </Table>
 
-      {/* Dialog de Confirmação */}
+      {/* dialog de exclusao */}
       <Dialog
         open={confirmDialogOpen}
         onClose={() => setConfirmDialogOpen(false)}

@@ -130,7 +130,7 @@ function CargosPage() {
             <TableRow key={cargo.id}>
               <TableCell>{cargo.descricao}</TableCell>
               <TableCell>
-                {/* Botão de Edição */}
+                {/* editar */}
                 <IconButton
                   color="primary"
                   onClick={() => navigate({ to: `/cargos/${cargo.id}/editar` })}
@@ -138,7 +138,7 @@ function CargosPage() {
                   <EditIcon />
                 </IconButton>
 
-                {/* Botão de Exclusão */}
+                {/* excluir */}
                 <IconButton
                   color="error"
                   onClick={() => abrirDialogExclusao(cargo)}
@@ -151,7 +151,7 @@ function CargosPage() {
         </TableBody>
       </Table>
 
-      {/* Dialog de Confirmação */}
+      {/* dialog excluir */}
       <Dialog
         open={confirmDialogOpen}
         onClose={() => setConfirmDialogOpen(false)}

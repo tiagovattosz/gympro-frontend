@@ -21,6 +21,9 @@ import {
 } from "@mui/material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AdminPanelSettings, Delete, Edit, Search } from "@mui/icons-material";
+import { normalizarTexto } from "../../utils/normalizarTexto";
+import formatCelular from "../../utils/formatCelular";
+import formatCPF from "../../utils/formatCPF";
 
 export const Route = createFileRoute("/funcionarios/")({
   component: FuncionariosPage,
@@ -32,8 +35,6 @@ function FuncionariosPage() {
   const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedFuncionario, setSelectedFuncionario] = useState(null);
-
-  // 🔍 Controle de filtro e pesquisa
   const [filtro, setFiltro] = useState("nome");
   const [termoPesquisa, setTermoPesquisa] = useState("");
 
@@ -67,19 +68,7 @@ function FuncionariosPage() {
     }
   }
 
-  // 🧩 Normalizador de texto (remove acentos, pontuação e espaços)
-  function normalizarTexto(texto) {
-    return texto
-      ? texto
-          .toString()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .replace(/[.\-\/\s]/g, "")
-          .toLowerCase()
-      : "";
-  }
-
-  // 🔎 Filtro dinâmico
+  // filtro
   useEffect(() => {
     const termoNormalizado = normalizarTexto(termoPesquisa);
 
@@ -137,18 +126,6 @@ function FuncionariosPage() {
     }
   }
 
-  function formatCPF(cpf) {
-    return cpf
-      ? cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4")
-      : "";
-  }
-
-  function formatCelular(celular) {
-    return celular
-      ? celular.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3")
-      : "";
-  }
-
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" mt={4}>
@@ -159,7 +136,6 @@ function FuncionariosPage() {
 
   return (
     <Box p={2}>
-      {/* Cabeçalho + filtros */}
       <Box
         display="flex"
         justifyContent="space-between"
@@ -170,8 +146,9 @@ function FuncionariosPage() {
       >
         <Typography variant="h5">Lista de Funcionários</Typography>
 
+        {/* filtro */}
         <Box display="flex" alignItems="center" gap={2}>
-          {/* Tipo de filtro */}
+          {/* tipo: cpf, nome, etc */}
           <TextField
             select
             size="small"
@@ -184,7 +161,7 @@ function FuncionariosPage() {
             <MenuItem value="cargo">Cargo</MenuItem>
           </TextField>
 
-          {/* Campo de pesquisa */}
+          {/* input */}
           <TextField
             size="small"
             placeholder={`Pesquisar por ${filtro}`}
@@ -209,7 +186,6 @@ function FuncionariosPage() {
         </Box>
       </Box>
 
-      {/* Tabela */}
       <Table>
         <TableHead>
           <TableRow>
@@ -265,7 +241,7 @@ function FuncionariosPage() {
         </TableBody>
       </Table>
 
-      {/* Dialog de Confirmação */}
+      {/* dialog exclusao */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Confirmar Exclusão</DialogTitle>
         <DialogContent>

@@ -100,7 +100,7 @@ function NovaManutencaoPage() {
         navigate({ to: "/manutencoes" });
       }
     } catch (err) {
-      setGlobalError("Erro de rede ou inesperado.");
+      setGlobalError("Erro de rede ou inesperado: " + err);
     } finally {
       setSubmitting(false);
     }
@@ -119,7 +119,6 @@ function NovaManutencaoPage() {
       )}
 
       <form onSubmit={handleSubmit} noValidate>
-        {/* Seleção de Equipamento */}
         <FormControl fullWidth margin="normal" error={!!errors.equipamentoId}>
           <InputLabel>Equipamento</InputLabel>
           <Select
@@ -144,7 +143,6 @@ function NovaManutencaoPage() {
           )}
         </FormControl>
 
-        {/* Descrição */}
         <TextField
           label="Descrição do Problema"
           name="descricao"

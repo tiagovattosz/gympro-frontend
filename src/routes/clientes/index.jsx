@@ -28,6 +28,10 @@ import {
 } from "@mui/icons-material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { differenceInCalendarDays } from "date-fns";
+import { getHoje } from "../../utils/getHoje";
+import { normalizarTexto } from "../../utils/normalizarTexto";
+import formatCelular from "../../utils/formatCelular";
+import formatCPF from "../../utils/formatCPF";
 
 export const Route = createFileRoute("/clientes/")({
   component: ClientesPage,
@@ -101,23 +105,12 @@ function ClientesPage() {
     const valor = e.target.value;
     setDataInicio(valor);
 
-    const hoje = new Date().toLocaleDateString("en-CA");
+    const hoje = getHoje();
     if (valor > hoje) {
       setErroData("A data de início não pode ser posterior ao dia de hoje.");
     } else {
       setErroData("");
     }
-  }
-
-  function normalizarTexto(texto) {
-    return texto
-      ? texto
-          .toString()
-          .normalize("NFD") // remove acentuação
-          .replace(/[\u0300-\u036f]/g, "") // remove diacríticos
-          .replace(/[.\-\/\s]/g, "") // remove pontuação comum
-          .toLowerCase()
-      : "";
   }
 
   useEffect(() => {
@@ -128,7 +121,7 @@ function ClientesPage() {
       const matricula = normalizarTexto(cliente.matricula);
       const cpf = normalizarTexto(cliente.cpf);
 
-      // filtro principal (nome, matrícula, cpf)
+      // filtro nome, matrícula, cpf
       let passaFiltroPrincipal = true;
       if (filtro === "nome") {
         passaFiltroPrincipal = nome.includes(termoNormalizado);
@@ -248,14 +241,6 @@ function ClientesPage() {
     return new Date(dataTermino) > new Date();
   }
 
-  function formatCPF(cpf) {
-    return cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
-  }
-
-  function formatCelular(celular) {
-    return celular.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
-  }
-
   function diasRestantes(dataTermino) {
     const hoje = new Date();
     const termino = new Date(dataTermino);
@@ -272,7 +257,7 @@ function ClientesPage() {
 
   return (
     <Box p={2}>
-      {/* Cabeçalho e filtros */}
+      {/* filtros */}
       <Box
         display="flex"
         justifyContent="space-between"
@@ -284,6 +269,7 @@ function ClientesPage() {
         <Typography variant="h5">Lista de Clientes</Typography>
 
         <Box display="flex" alignItems="center" gap={2}>
+          {/* filtro assinatura */}
           <TextField
             select
             size="small"
@@ -296,7 +282,7 @@ function ClientesPage() {
             <MenuItem value="vencida">Vencida</MenuItem>
           </TextField>
 
-          {/* Tipo de filtro */}
+          {/* tipo: nome, cpf, etc. */}
           <TextField
             select
             size="small"
@@ -308,7 +294,7 @@ function ClientesPage() {
             <MenuItem value="cpf">CPF</MenuItem>
           </TextField>
 
-          {/* Campo de pesquisa */}
+          {/* input */}
           <TextField
             size="small"
             placeholder={`Pesquisar por ${filtro}`}
@@ -399,7 +385,7 @@ function ClientesPage() {
         </TableBody>
       </Table>
 
-      {/* Modal: Definir Plano */}
+      {/* dialog definir plano */}
       <Dialog open={planoDialogOpen} onClose={() => setPlanoDialogOpen(false)}>
         <DialogTitle>Definir Plano</DialogTitle>
         <DialogContent>
@@ -448,7 +434,7 @@ function ClientesPage() {
         </DialogActions>
       </Dialog>
 
-      {/* Dialogo de confirmação */}
+      {/* dialog exclusao */}
       <Dialog
         open={confirmDialogOpen}
         onClose={() => setConfirmDialogOpen(false)}

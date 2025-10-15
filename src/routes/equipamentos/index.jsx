@@ -32,7 +32,7 @@ function EquipamentosPage() {
   const [equipamentosFiltrados, setEquipamentosFiltrados] = useState([]);
   const [filtroStatus, setFiltroStatus] = useState("todos");
   const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState(null); // equipamento selecionado para excluir
+  const [selected, setSelected] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
@@ -69,7 +69,7 @@ function EquipamentosPage() {
     }
   }
 
-  // Atualiza lista conforme o filtro selecionado
+  // filtro
   useEffect(() => {
     const filtrados = equipamentos.filter((eq) => {
       if (filtroStatus === "operando") {
@@ -118,7 +118,6 @@ function EquipamentosPage() {
 
   return (
     <Box p={2}>
-      {/* Cabeçalho com filtro e botão */}
       <Box
         display="flex"
         justifyContent="space-between"
@@ -129,6 +128,7 @@ function EquipamentosPage() {
       >
         <Typography variant="h5">Lista de Equipamentos</Typography>
 
+        {/* filtros */}
         <Box display="flex" alignItems="center" gap={2}>
           <TextField
             select
@@ -152,7 +152,6 @@ function EquipamentosPage() {
         </Box>
       </Box>
 
-      {/* Tabela */}
       <Table>
         <TableHead>
           <TableRow>
@@ -163,13 +162,13 @@ function EquipamentosPage() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {equipamentosFiltrados.map((eq) => (
-            <TableRow key={eq.id}>
-              <TableCell>{eq.nome}</TableCell>
-              <TableCell>{eq.descricao}</TableCell>
+          {equipamentosFiltrados.map((equipamento) => (
+            <TableRow key={equipamento.id}>
+              <TableCell>{equipamento.nome}</TableCell>
+              <TableCell>{equipamento.descricao}</TableCell>
               <TableCell>
                 <Box display="flex" alignItems="center" gap={1}>
-                  {eq.emManutencao ? (
+                  {equipamento.emManutencao ? (
                     <>
                       <Cancel color="error" />
                       <Typography variant="body2" color="error">
@@ -190,12 +189,15 @@ function EquipamentosPage() {
                 <IconButton
                   color="primary"
                   onClick={() =>
-                    navigate({ to: `/equipamentos/${eq.id}/editar` })
+                    navigate({ to: `/equipamentos/${equipamento.id}/editar` })
                   }
                 >
                   <Edit />
                 </IconButton>
-                <IconButton color="error" onClick={() => setSelected(eq)}>
+                <IconButton
+                  color="error"
+                  onClick={() => setSelected(equipamento)}
+                >
                   <Delete />
                 </IconButton>
               </TableCell>
@@ -204,7 +206,7 @@ function EquipamentosPage() {
         </TableBody>
       </Table>
 
-      {/* Diálogo de confirmação */}
+      {/* dialog exclusao */}
       <Dialog open={!!selected} onClose={() => setSelected(null)}>
         <DialogTitle>Confirmar Exclusão</DialogTitle>
         <DialogContent>
@@ -221,7 +223,7 @@ function EquipamentosPage() {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar de sucesso */}
+      {/* snackbar de sucesso */}
       <Snackbar
         open={!!success}
         autoHideDuration={3000}
@@ -236,7 +238,7 @@ function EquipamentosPage() {
         </Alert>
       </Snackbar>
 
-      {/* Snackbar de erro */}
+      {/* snackbar de erro */}
       <Snackbar
         open={!!error}
         autoHideDuration={4000}
