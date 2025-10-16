@@ -26,6 +26,11 @@ import {
 } from "recharts";
 import { createFileRoute } from "@tanstack/react-router";
 import { format } from "date-fns";
+import {
+  getHoje,
+  getSemanaPassada,
+  parseDateSemTimezone,
+} from "../utils/getHoje";
 
 export const Route = createFileRoute("/")({
   component: DashboardPage,
@@ -39,8 +44,8 @@ function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filtros, setFiltros] = useState({
-    inicio: "2024-10-01",
-    fim: "2025-10-15",
+    inicio: getSemanaPassada(),
+    fim: getHoje(),
   });
 
   const carregarDados = useCallback(async () => {
@@ -82,7 +87,7 @@ function DashboardPage() {
 
       setEntradasPorDia(
         entradasData.map((item) => ({
-          data: format(new Date(item.data), "dd/MM"),
+          data: format(parseDateSemTimezone(item.data), "dd/MM"),
           quantidade: item.quantidadeEntradas,
         }))
       );

@@ -1,4 +1,3 @@
-// src/routes/clientes/novo.tsx
 import { useState } from "react";
 import {
   Box,

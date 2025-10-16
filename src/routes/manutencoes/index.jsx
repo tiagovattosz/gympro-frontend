@@ -33,35 +33,22 @@ function ManutencoesPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // Define abas de acordo com a role
-  const abas =
-    isAdmin === false
-      ? ["Novas Solicitações"]
-      : [
-          "Novas Solicitações",
-          "Em Realização",
-          "Realizadas",
-          "Canceladas/Rejeitadas",
-        ];
-
-  useEffect(() => {
-    if (isAdmin === null) return; // ainda carregando
-    setTabIndex(0); // reseta a aba ao trocar role
-  }, [isAdmin]);
+  const abas = [
+    "Novas Solicitações",
+    "Em Realização",
+    "Realizadas",
+    "Canceladas/Rejeitadas",
+  ];
 
   useEffect(() => {
     if (isAdmin === null) return;
 
-    const endpointsAdmin = [
+    const endpoints = [
       "/api/manutencoes/solicitacoes",
       "/api/manutencoes/em-realizacao",
       "/api/manutencoes/realizadas",
       "/api/manutencoes/canceladas-e-rejeitadas",
     ];
-
-    const endpointsUser = ["/api/manutencoes/solicitacoes"];
-
-    const endpoints = isAdmin ? endpointsAdmin : endpointsUser;
 
     async function fetchManutencoes() {
       setLoading(true);
@@ -107,6 +94,8 @@ function ManutencoesPage() {
   }
 
   const renderAcoes = (manutencao) => {
+    if (!isAdmin) return null; // funcionários não têm ações
+
     switch (tabIndex) {
       case 0: // Solicitações
         return (
@@ -143,7 +132,7 @@ function ManutencoesPage() {
           </>
         );
       default:
-        return null; // Realizadas e Canceladas/Rejeitadas não têm ações
+        return null;
     }
   };
 
@@ -154,8 +143,6 @@ function ManutencoesPage() {
       </Box>
     );
   }
-
-  const exibirAcoes = tabIndex === 0 || tabIndex === 1;
 
   return (
     <Box p={2}>
@@ -180,7 +167,7 @@ function ManutencoesPage() {
         onChange={(e, val) => setTabIndex(val)}
         sx={{ mb: 2 }}
       >
-        {abas.map((label, idx) => (
+        {abas.map((label) => (
           <Tab key={label} label={label} />
         ))}
       </Tabs>
@@ -192,7 +179,7 @@ function ManutencoesPage() {
             <TableCell>Equipamento</TableCell>
             <TableCell>Descrição</TableCell>
             <TableCell>Data Solicitação</TableCell>
-            {exibirAcoes && <TableCell>Ações</TableCell>}
+            {isAdmin && <TableCell>Ações</TableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -204,12 +191,13 @@ function ManutencoesPage() {
               <TableCell>
                 {new Date(m.dataSolicitacao).toLocaleString("pt-BR")}
               </TableCell>
-              {exibirAcoes && <TableCell>{renderAcoes(m)}</TableCell>}
+              {isAdmin && <TableCell>{renderAcoes(m)}</TableCell>}
             </TableRow>
           ))}
         </TableBody>
       </Table>
 
+      {/* snackbar de sucesso */}
       <Snackbar
         open={!!success}
         autoHideDuration={3000}
@@ -220,6 +208,7 @@ function ManutencoesPage() {
         </Alert>
       </Snackbar>
 
+      {/* snackbar de erro */}
       <Snackbar
         open={!!error}
         autoHideDuration={4000}

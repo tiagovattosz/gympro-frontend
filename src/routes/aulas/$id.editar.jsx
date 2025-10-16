@@ -141,7 +141,7 @@ function EditarAulaPage() {
         navigate({ to: "/aulas" });
       }
     } catch (err) {
-      setGlobalError("Erro de rede ou inesperado.");
+      setGlobalError("Erro de rede ou inesperado: " + err);
     } finally {
       setSubmitting(false);
     }
@@ -178,7 +178,6 @@ function EditarAulaPage() {
       )}
 
       <form onSubmit={handleSubmit} noValidate>
-        {/* Modalidade */}
         <FormControl fullWidth margin="normal">
           <InputLabel>Modalidade</InputLabel>
           <Select
@@ -198,7 +197,6 @@ function EditarAulaPage() {
           </Select>
         </FormControl>
 
-        {/* Professor */}
         <FormControl fullWidth margin="normal">
           <InputLabel>Professor</InputLabel>
           <Select
@@ -218,7 +216,6 @@ function EditarAulaPage() {
           </Select>
         </FormControl>
 
-        {/* Dia da Semana */}
         <FormControl
           fullWidth
           margin="normal"
@@ -240,7 +237,6 @@ function EditarAulaPage() {
           </Select>
         </FormControl>
 
-        {/* Horário */}
         <TextField
           label="Horário"
           name="horario"
@@ -256,7 +252,6 @@ function EditarAulaPage() {
           helperText={errors.horario}
         />
 
-        {/* Máximo de Inscrições */}
         <TextField
           label="Máximo de Inscrições"
           name="maximoInscricoes"

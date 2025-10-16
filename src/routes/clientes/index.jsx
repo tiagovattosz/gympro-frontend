@@ -348,6 +348,7 @@ function ClientesPage() {
             <TableCell>CPF</TableCell>
             <TableCell>Celular</TableCell>
             <TableCell>Plano</TableCell>
+            <TableCell>Inscrições</TableCell>
             <TableCell>Status da Assinatura</TableCell>
             <TableCell>Ações</TableCell>
           </TableRow>
@@ -360,6 +361,13 @@ function ClientesPage() {
               <TableCell>{formatCPF(cliente.cpf)}</TableCell>
               <TableCell>{formatCelular(cliente.celular)}</TableCell>
               <TableCell>{cliente.plano || "-"}</TableCell>
+              <TableCell>
+                {cliente.plano
+                  ? cliente.numeroInscricoesAtivas +
+                    "/" +
+                    cliente.limiteDeInscricoes
+                  : "-"}
+              </TableCell>
               <TableCell>
                 {isAssinaturaAtiva(cliente.dataTerminoAssinatura) ? (
                   <Box display="flex" alignItems="center" gap={1}>
@@ -374,7 +382,7 @@ function ClientesPage() {
                   <Box display="flex" alignItems="center" gap={1}>
                     <Cancel color="error" />
                     <Typography variant="body2" color="error">
-                      Vencida
+                      Vencida em {formatDate(cliente.dataTerminoAssinatura)}
                     </Typography>
                   </Box>
                 )}

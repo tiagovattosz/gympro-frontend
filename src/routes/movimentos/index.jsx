@@ -19,18 +19,38 @@ export const Route = createFileRoute("/movimentos/")({
   component: MovimentosPage,
 });
 
+function formatISODate(date) {
+  const ano = date.getFullYear();
+  const mes = String(date.getMonth() + 1).padStart(2, "0");
+  const dia = String(date.getDate()).padStart(2, "0");
+  return `${ano}-${mes}-${dia}`;
+}
+
 function MovimentosPage() {
   const [movimentos, setMovimentos] = useState([]);
   const [filteredMovimentos, setFilteredMovimentos] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [matricula, setMatricula] = useState("");
-  const [dataInicio, setDataInicio] = useState("");
-  const [dataFim, setDataFim] = useState("");
+
+  const hoje = new Date();
+  const semanaPassada = new Date();
+  semanaPassada.setDate(hoje.getDate() - 7);
+
+  const [dataInicio, setDataInicio] = useState(formatISODate(semanaPassada));
+  const [dataFim, setDataFim] = useState(formatISODate(hoje));
 
   useEffect(() => {
-    fetchMovimentos();
+    async function carregar() {
+      await fetchMovimentos();
+    }
+    carregar();
   }, []);
+
+  useEffect(() => {
+    if (movimentos.length > 0) {
+      handleFilter(); // aplica o filtro automático assim que carregar
+    }
+  }, [movimentos]);
 
   async function fetchMovimentos() {
     try {
@@ -67,12 +87,20 @@ function MovimentosPage() {
     }
 
     if (dataInicio !== "" && dataFim !== "") {
-      const inicio = new Date(dataInicio);
-      const fim = new Date(dataFim);
-      // normaliza fim para incluir todo o dia (até 23:59:59.999)
-      fim.setHours(23, 59, 59, 999);
+      const [anoI, mesI, diaI] = dataInicio.split("-").map(Number);
+      const inicio = new Date(anoI, mesI - 1, diaI, 0, 0, 0, 0);
+
+      const [anoF, mesF, diaF] = dataFim.split("-").map(Number);
+      const fim = new Date(anoF, mesF - 1, diaF, 23, 59, 59, 999);
+
       filtrados = filtrados.filter((mov) => {
-        const dataMov = parseDateStringToLocal(mov.data);
+        const [ano, mes, dia] = mov.data.split("-").map(Number);
+        const [hora, minuto, segundo] = mov.hora
+          .split(":")
+          .map((v) => parseInt(v) || 0);
+
+        const dataMov = new Date(ano, mes - 1, dia, hora, minuto, segundo);
+
         return dataMov >= inicio && dataMov <= fim;
       });
     }
@@ -87,14 +115,11 @@ function MovimentosPage() {
     setFilteredMovimentos(movimentos);
   }
 
-  // Recebe "YYYY-MM-DD" e retorna Date local (evita shift UTC)
   function parseDateStringToLocal(dateStr) {
     if (!dateStr) return null;
-    // aceita também caso já venha no formato 'YYYY-MM-DDTHH:mm:ss' (retira parte da hora)
     const onlyDate = dateStr.split("T")[0];
     const match = onlyDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
     if (!match) {
-      // fallback: tenta criar Date normalmente
       return new Date(dateStr);
     }
     const [, yyyy, mm, dd] = match;
@@ -107,12 +132,9 @@ function MovimentosPage() {
     return format(d, "dd/MM/yyyy");
   }
 
-  // Recebe "HH:mm" ou "HH:mm:ss" ou "HH:mm:ss.sssss" -> retorna "HH:mm:ss" (sem microssegundos)
   function formatHora(horaCompleta) {
     if (!horaCompleta) return "-";
-    // se hora completa contém ponto (microsegundos), remova tudo após o ponto
     const semMicros = horaCompleta.split(".")[0];
-    // se for apenas "HH:mm", devolve como está; se tiver segundos, pega primeiro 8 chars
     if (semMicros.length >= 8) return semMicros.substring(0, 8);
     return semMicros;
   }

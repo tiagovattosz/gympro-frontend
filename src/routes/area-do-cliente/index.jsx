@@ -179,14 +179,18 @@ function AreaDoCliente() {
                         <FitnessCenterIcon color="primary" />
                       </ListItemIcon>
                       <ListItemText
-                        primary={i.aulaDescricao || "—"}
+                        primary={
+                          i.aulaDescricao +
+                          " (" +
+                          i.diaDaSemana +
+                          " " +
+                          i.horario +
+                          ")"
+                        }
                         secondary={
                           <>
                             <Typography variant="body2" color="text.secondary">
                               Professor: {i.professorNome || "—"}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              Data da inscrição: {formatDate(i.dataInscricao)}
                             </Typography>
                           </>
                         }

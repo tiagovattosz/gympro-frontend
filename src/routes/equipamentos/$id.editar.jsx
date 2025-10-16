@@ -99,7 +99,6 @@ function EditarEquipamentoPage() {
     try {
       const token = localStorage.getItem("auth_token");
 
-      // Envia apenas os campos relevantes
       const payload = {
         nome: form.nome,
         descricao: form.descricao,
