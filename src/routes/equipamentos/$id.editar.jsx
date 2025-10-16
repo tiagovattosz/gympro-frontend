@@ -6,8 +6,6 @@ import {
   Typography,
   CircularProgress,
   Alert,
-  FormControlLabel,
-  Checkbox,
 } from "@mui/material";
 import {
   createFileRoute,
@@ -26,7 +24,6 @@ function EditarEquipamentoPage() {
   const [form, setForm] = useState({
     nome: "",
     descricao: "",
-    emManutencao: false,
   });
 
   const [errors, setErrors] = useState({});
@@ -46,15 +43,12 @@ function EditarEquipamentoPage() {
           },
         });
 
-        if (!response.ok) {
-          throw new Error("Erro ao buscar equipamento");
-        }
+        if (!response.ok) throw new Error("Erro ao buscar equipamento");
 
         const data = await response.json();
         setForm({
           nome: data.nome || "",
           descricao: data.descricao || "",
-          emManutencao: !!data.emManutencao,
         });
       } catch (error) {
         console.error(error);
@@ -68,10 +62,10 @@ function EditarEquipamentoPage() {
   }, [id]);
 
   function handleChange(e) {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   }
 
@@ -105,13 +99,19 @@ function EditarEquipamentoPage() {
     try {
       const token = localStorage.getItem("auth_token");
 
+      // Envia apenas os campos relevantes
+      const payload = {
+        nome: form.nome,
+        descricao: form.descricao,
+      };
+
       const response = await fetch(`/api/equipamentos/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
@@ -172,17 +172,6 @@ function EditarEquipamentoPage() {
           minRows={3}
           error={!!errors.descricao}
           helperText={errors.descricao}
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={form.emManutencao}
-              onChange={handleChange}
-              name="emManutencao"
-              color="primary"
-            />
-          }
-          label="Em Manutenção"
         />
 
         <Box mt={3}>

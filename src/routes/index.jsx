@@ -122,11 +122,7 @@ function DashboardPage() {
 
   return (
     <Box p={3}>
-      <Typography variant="h4" gutterBottom fontWeight={600}>
-        Dashboard
-      </Typography>
-
-      {/* 🔍 Filtros */}
+      {/* filtros */}
       <Card sx={{ mb: 3, p: 2 }}>
         <Typography variant="h6" gutterBottom>
           Período

@@ -32,6 +32,7 @@ import { getHoje } from "../../utils/getHoje";
 import { normalizarTexto } from "../../utils/normalizarTexto";
 import formatCelular from "../../utils/formatCelular";
 import formatCPF from "../../utils/formatCPF";
+import { formatDate } from "../../utils/formatDate";
 
 export const Route = createFileRoute("/clientes/")({
   component: ClientesPage,
@@ -51,8 +52,8 @@ function ClientesPage() {
   const [filtro, setFiltro] = useState("nome");
   const [termoPesquisa, setTermoPesquisa] = useState("");
   const [erroData, setErroData] = useState("");
-
   const [filtroAssinatura, setFiltroAssinatura] = useState("todos");
+  const [filtroPlano, setFiltroPlano] = useState("todos");
 
   const navigate = useNavigate();
 
@@ -121,7 +122,7 @@ function ClientesPage() {
       const matricula = normalizarTexto(cliente.matricula);
       const cpf = normalizarTexto(cliente.cpf);
 
-      // filtro nome, matrícula, cpf
+      // filtro nome cpf matricula
       let passaFiltroPrincipal = true;
       if (filtro === "nome") {
         passaFiltroPrincipal = nome.includes(termoNormalizado);
@@ -131,21 +132,24 @@ function ClientesPage() {
         passaFiltroPrincipal = cpf.includes(termoNormalizado);
       }
 
-      // filtro de assinatura
+      // filtro assinatura
       const ativa = isAssinaturaAtiva(cliente.dataTerminoAssinatura);
       let passaFiltroAssinatura = true;
+      if (filtroAssinatura === "ativa") passaFiltroAssinatura = ativa;
+      else if (filtroAssinatura === "vencida") passaFiltroAssinatura = !ativa;
 
-      if (filtroAssinatura === "ativa") {
-        passaFiltroAssinatura = ativa;
-      } else if (filtroAssinatura === "vencida") {
-        passaFiltroAssinatura = !ativa;
+      // filtro plano
+      let passaFiltroPlano = true;
+      if (filtroPlano !== "todos") {
+        passaFiltroPlano =
+          normalizarTexto(cliente.plano) === normalizarTexto(filtroPlano);
       }
 
-      return passaFiltroPrincipal && passaFiltroAssinatura;
+      return passaFiltroPrincipal && passaFiltroAssinatura && passaFiltroPlano;
     });
 
     setClientesFiltrados(filtrados);
-  }, [termoPesquisa, filtro, clientes, filtroAssinatura]);
+  }, [termoPesquisa, filtro, clientes, filtroAssinatura, filtroPlano]);
 
   async function excluirCliente() {
     if (!clienteSelecionado) return;
@@ -224,7 +228,7 @@ function ClientesPage() {
       if (!response.ok) throw new Error("Erro ao remover plano");
 
       setPlanoDialogOpen(false);
-      await fetchClientes(); // Atualiza a lista
+      await fetchClientes();
     } catch (error) {
       console.error("Erro ao remover plano:", error);
       alert("Não foi possível remover o plano.");
@@ -257,7 +261,6 @@ function ClientesPage() {
 
   return (
     <Box p={2}>
-      {/* filtros */}
       <Box
         display="flex"
         justifyContent="space-between"
@@ -268,7 +271,23 @@ function ClientesPage() {
       >
         <Typography variant="h5">Lista de Clientes</Typography>
 
-        <Box display="flex" alignItems="center" gap={2}>
+        <Box display="flex" alignItems="center" gap={2} flexWrap="wrap">
+          <TextField
+            select
+            label="Filtrar por plano"
+            value={filtroPlano}
+            onChange={(e) => setFiltroPlano(e.target.value)}
+            size="small"
+            sx={{ minWidth: 250 }}
+          >
+            <MenuItem value="todos">Todos os planos</MenuItem>
+            {planos.map((p) => (
+              <MenuItem key={p.id} value={p.descricao}>
+                {p.descricao}
+              </MenuItem>
+            ))}
+          </TextField>
+
           {/* filtro assinatura */}
           <TextField
             select
@@ -282,7 +301,7 @@ function ClientesPage() {
             <MenuItem value="vencida">Vencida</MenuItem>
           </TextField>
 
-          {/* tipo: nome, cpf, etc. */}
+          {/* tipo cpf, nome, matricula */}
           <TextField
             select
             size="small"
@@ -319,7 +338,8 @@ function ClientesPage() {
         </Box>
       </Box>
 
-      {/* Tabela */}
+      <Box mb={2}></Box>
+
       <Table>
         <TableHead>
           <TableRow>
@@ -345,7 +365,8 @@ function ClientesPage() {
                   <Box display="flex" alignItems="center" gap={1}>
                     <CheckCircle color="success" />
                     <Typography variant="body2" color="textSecondary">
-                      {diasRestantes(cliente.dataTerminoAssinatura)} dias
+                      {formatDate(cliente.dataTerminoAssinatura) + " "} -
+                      {" " + diasRestantes(cliente.dataTerminoAssinatura)} dias
                       restantes
                     </Typography>
                   </Box>
@@ -385,7 +406,7 @@ function ClientesPage() {
         </TableBody>
       </Table>
 
-      {/* dialog definir plano */}
+      {/* dialog assinatura */}
       <Dialog open={planoDialogOpen} onClose={() => setPlanoDialogOpen(false)}>
         <DialogTitle>Definir Plano</DialogTitle>
         <DialogContent>
@@ -428,13 +449,17 @@ function ClientesPage() {
           <Button variant="contained" color="error" onClick={removerPlano}>
             Remover plano
           </Button>
-          <Button variant="contained" onClick={definirPlano}>
+          <Button
+            disabled={!!erroData}
+            variant="contained"
+            onClick={definirPlano}
+          >
             Salvar
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* dialog exclusao */}
+      {/* dialog exclusão */}
       <Dialog
         open={confirmDialogOpen}
         onClose={() => setConfirmDialogOpen(false)}

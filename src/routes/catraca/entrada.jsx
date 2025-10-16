@@ -7,6 +7,7 @@ import {
   CircularProgress,
   Button,
 } from "@mui/material";
+import { formatDate, formatHora } from "../../utils/formatDate";
 
 export const Route = createFileRoute("/catraca/entrada")({
   component: CatracaEntrada,
@@ -42,7 +43,7 @@ export default function CatracaEntrada() {
       if (response.ok) {
         setResultado("sucesso");
         setMensagem(
-          `${data.tipoMovimentacao} liberada para ${data.nome} (${data.tipoPessoa === "C" ? "Cliente" : "Funcionário"})\nHora: ${data.hora}`
+          `${data.tipoMovimentacao} liberada para ${data.nome} (${data.tipoPessoa === "C" ? "Cliente" : "Funcionário"})\nData: ${formatDate(data.data)}\nHora: ${formatHora(data.hora)}`
         );
       } else {
         setResultado("erro");

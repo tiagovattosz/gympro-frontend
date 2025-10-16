@@ -35,6 +35,7 @@ import {
 } from "@mui/icons-material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { formatDate } from "../../utils/formatDate";
+import { getHoje } from "../../utils/getHoje";
 
 export const Route = createFileRoute("/aulas/")({
   component: AulasPage,
@@ -440,7 +441,7 @@ function AulasPage() {
                                       {aluno.nome} - Inscrito em{" "}
                                       {aluno.dataDaInscricao
                                         ? formatDate(aluno.dataDaInscricao)
-                                        : "-"}
+                                        : formatDate(getHoje())}
                                     </TableCell>
                                     <TableCell sx={{ borderBottom: "none" }}>
                                       <IconButton

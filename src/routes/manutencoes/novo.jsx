@@ -120,7 +120,7 @@ function NovaManutencaoPage() {
 
       <form onSubmit={handleSubmit} noValidate>
         <FormControl fullWidth margin="normal" error={!!errors.equipamentoId}>
-          <InputLabel>Equipamento</InputLabel>
+          <InputLabel>Equipamento *</InputLabel>
           <Select
             name="equipamentoId"
             value={form.equipamentoId}

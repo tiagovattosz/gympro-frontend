@@ -37,7 +37,8 @@ function ManutencoesPage() {
       "/api/manutencoes/realizadas",
       "/api/manutencoes/canceladas-e-rejeitadas",
     ];
-    const fetchManutencoes = async () => {
+
+    async function fetchManutencoes() {
       setLoading(true);
       try {
         const token = localStorage.getItem("auth_token");
@@ -53,7 +54,7 @@ function ManutencoesPage() {
       } finally {
         setLoading(false);
       }
-    };
+    }
 
     fetchManutencoes();
   }, [tabIndex]);
@@ -66,24 +67,18 @@ function ManutencoesPage() {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
       });
+
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message || "Erro na ação");
       }
+
       setManutencoes((prev) => prev.filter((m) => m.id !== id));
       setSuccess(`Manutenção ${acao} com sucesso!`);
     } catch (err) {
       console.error(err);
       setError(err.message);
     }
-  }
-
-  if (loading) {
-    return (
-      <Box display="flex" justifyContent="center" mt={4}>
-        <CircularProgress />
-      </Box>
-    );
   }
 
   const renderAcoes = (manutencao) => {
@@ -123,9 +118,19 @@ function ManutencoesPage() {
           </>
         );
       default:
-        return null; // realizadas e canceladas/rejeitadas não têm ações
+        return null; // Realizadas e Canceladas/Rejeitadas não têm ações
     }
   };
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" mt={4}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  const exibirAcoes = tabIndex === 0 || tabIndex === 1;
 
   return (
     <Box p={2}>
@@ -163,7 +168,7 @@ function ManutencoesPage() {
             <TableCell>Equipamento</TableCell>
             <TableCell>Descrição</TableCell>
             <TableCell>Data Solicitação</TableCell>
-            <TableCell>Ações</TableCell>
+            {exibirAcoes && <TableCell>Ações</TableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -175,7 +180,7 @@ function ManutencoesPage() {
               <TableCell>
                 {new Date(m.dataSolicitacao).toLocaleString("pt-BR")}
               </TableCell>
-              <TableCell>{renderAcoes(m)}</TableCell>
+              {exibirAcoes && <TableCell>{renderAcoes(m)}</TableCell>}
             </TableRow>
           ))}
         </TableBody>
