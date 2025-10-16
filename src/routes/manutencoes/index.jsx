@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { Check, Close } from "@mui/icons-material";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useAdminGuard } from "../../hooks/useAdminGuard";
 
 export const Route = createFileRoute("/manutencoes/")({
   component: ManutencoesPage,
@@ -24,19 +25,43 @@ export const Route = createFileRoute("/manutencoes/")({
 
 function ManutencoesPage() {
   const navigate = useNavigate();
+  const isAdmin = useAdminGuard();
+
   const [tabIndex, setTabIndex] = useState(0);
   const [manutencoes, setManutencoes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // Define abas de acordo com a role
+  const abas =
+    isAdmin === false
+      ? ["Novas Solicitações"]
+      : [
+          "Novas Solicitações",
+          "Em Realização",
+          "Realizadas",
+          "Canceladas/Rejeitadas",
+        ];
+
   useEffect(() => {
-    const endpoints = [
+    if (isAdmin === null) return; // ainda carregando
+    setTabIndex(0); // reseta a aba ao trocar role
+  }, [isAdmin]);
+
+  useEffect(() => {
+    if (isAdmin === null) return;
+
+    const endpointsAdmin = [
       "/api/manutencoes/solicitacoes",
       "/api/manutencoes/em-realizacao",
       "/api/manutencoes/realizadas",
       "/api/manutencoes/canceladas-e-rejeitadas",
     ];
+
+    const endpointsUser = ["/api/manutencoes/solicitacoes"];
+
+    const endpoints = isAdmin ? endpointsAdmin : endpointsUser;
 
     async function fetchManutencoes() {
       setLoading(true);
@@ -57,7 +82,7 @@ function ManutencoesPage() {
     }
 
     fetchManutencoes();
-  }, [tabIndex]);
+  }, [tabIndex, isAdmin]);
 
   async function handleAcao(id, acao) {
     try {
@@ -122,7 +147,7 @@ function ManutencoesPage() {
     }
   };
 
-  if (loading) {
+  if (loading || isAdmin === null) {
     return (
       <Box display="flex" justifyContent="center" mt={4}>
         <CircularProgress />
@@ -155,10 +180,9 @@ function ManutencoesPage() {
         onChange={(e, val) => setTabIndex(val)}
         sx={{ mb: 2 }}
       >
-        <Tab label="Novas Solicitações" />
-        <Tab label="Em Realização" />
-        <Tab label="Realizadas" />
-        <Tab label="Canceladas/Rejeitadas" />
+        {abas.map((label, idx) => (
+          <Tab key={label} label={label} />
+        ))}
       </Tabs>
 
       <Table>
@@ -186,7 +210,6 @@ function ManutencoesPage() {
         </TableBody>
       </Table>
 
-      {/* snackbar de sucesso */}
       <Snackbar
         open={!!success}
         autoHideDuration={3000}
@@ -197,7 +220,6 @@ function ManutencoesPage() {
         </Alert>
       </Snackbar>
 
-      {/* snackbar de erro */}
       <Snackbar
         open={!!error}
         autoHideDuration={4000}
