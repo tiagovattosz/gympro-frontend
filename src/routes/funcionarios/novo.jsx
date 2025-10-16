@@ -13,6 +13,7 @@ import {
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { isValid as isValidCPF } from "@fnando/cpf";
 import { differenceInYears } from "date-fns";
+import { useAdminGuard } from "../../hooks/useAdminGuard";
 
 export const Route = createFileRoute("/funcionarios/novo")({
   component: NovoFuncionarioPage,
@@ -130,6 +131,26 @@ function NovoFuncionarioPage() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  const isAdmin = useAdminGuard();
+
+  if (isAdmin === null) {
+    return (
+      <Box display="flex" justifyContent="center" mt={4}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (isAdmin === false) {
+    return (
+      <Box p={2}>
+        <Typography variant="h6">
+          Você não tem permissão para acessar esse recurso.
+        </Typography>
+      </Box>
+    );
   }
 
   return (

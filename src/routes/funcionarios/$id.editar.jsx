@@ -16,6 +16,7 @@ import {
   useParams,
 } from "@tanstack/react-router";
 import { differenceInYears } from "date-fns";
+import { useAdminGuard } from "../../hooks/useAdminGuard";
 
 export const Route = createFileRoute("/funcionarios/$id/editar")({
   component: EditarFuncionarioPage,
@@ -167,6 +168,26 @@ function EditarFuncionarioPage() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  const isAdmin = useAdminGuard();
+
+  if (isAdmin === null) {
+    return (
+      <Box display="flex" justifyContent="center" mt={4}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (isAdmin === false) {
+    return (
+      <Box p={2}>
+        <Typography variant="h6">
+          Você não tem permissão para acessar esse recurso.
+        </Typography>
+      </Box>
+    );
   }
 
   if (loading) {

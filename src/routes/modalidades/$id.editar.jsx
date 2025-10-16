@@ -12,6 +12,7 @@ import {
   useNavigate,
   useParams,
 } from "@tanstack/react-router";
+import { useAdminGuard } from "../../hooks/useAdminGuard";
 
 export const Route = createFileRoute("/modalidades/$id/editar")({
   component: EditarModalidadePage,
@@ -115,6 +116,26 @@ function EditarModalidadePage() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  const isAdmin = useAdminGuard();
+
+  if (isAdmin === null) {
+    return (
+      <Box display="flex" justifyContent="center" mt={4}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (isAdmin === false) {
+    return (
+      <Box p={2}>
+        <Typography variant="h6">
+          Você não tem permissão para acessar esse recurso.
+        </Typography>
+      </Box>
+    );
   }
 
   if (loading) {

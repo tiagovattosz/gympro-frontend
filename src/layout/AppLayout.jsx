@@ -239,9 +239,7 @@ export default function AppLayout() {
                   component={Link}
                   to={paths[idx]}
                   sx={{
-                    "&:hover": {
-                      backgroundColor: theme.palette.action.hover,
-                    },
+                    "&:hover": { backgroundColor: theme.palette.action.hover },
                     borderRadius: 1,
                     my: 0.5,
                   }}
@@ -289,6 +287,22 @@ export default function AppLayout() {
             <ListItemText primary="Aulas" />
           </ListItem>
           <Divider sx={{ my: 1.5 }} />
+
+          <ListItem
+            button
+            component={Link}
+            to="/equipamentos"
+            sx={{
+              "&:hover": { backgroundColor: theme.palette.action.hover },
+              borderRadius: 1,
+              my: 0.5,
+            }}
+          >
+            <ListItemIcon sx={{ color: theme.palette.primary.main }}>
+              <FitnessCenterIcon />
+            </ListItemIcon>
+            <ListItemText primary="Equipamentos" />
+          </ListItem>
 
           <ListItem
             button

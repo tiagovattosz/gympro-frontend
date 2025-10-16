@@ -24,6 +24,7 @@ import { AdminPanelSettings, Delete, Edit, Search } from "@mui/icons-material";
 import { normalizarTexto } from "../../utils/normalizarTexto";
 import formatCelular from "../../utils/formatCelular";
 import formatCPF from "../../utils/formatCPF";
+import { useAdminGuard } from "../../hooks/useAdminGuard";
 
 export const Route = createFileRoute("/funcionarios/")({
   component: FuncionariosPage,
@@ -124,6 +125,26 @@ function FuncionariosPage() {
     } finally {
       handleCloseDialog();
     }
+  }
+
+  const isAdmin = useAdminGuard();
+
+  if (isAdmin === null) {
+    return (
+      <Box display="flex" justifyContent="center" mt={4}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (isAdmin === false) {
+    return (
+      <Box p={2}>
+        <Typography variant="h6">
+          Você não tem permissão para acessar esse recurso.
+        </Typography>
+      </Box>
+    );
   }
 
   if (loading) {
